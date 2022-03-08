@@ -11,6 +11,8 @@ import Tables from "../views/Tables.vue";
 import SamplePage from "../views/SamplePage.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 
+import Devices from "../views/Devices.vue";
+
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 
@@ -48,7 +50,7 @@ const routes = [
       {
         path: "/devices",
         name: "devices",
-        components: { default: SamplePage },
+        components: { default: Devices },
       },
       {
         path: "/alerts",
