@@ -110,13 +110,32 @@
               <td>{{ row.item.description }}</td>
               <td>{{ row.item.template }}</td>
               <td>
+                <el-tooltip placement="left" :content="row.item.isActive ? 'Turn off' : 'Turn on'">
+                  <base-button
+                    :key="row.item.id"
+                    size="sm"
+                    outline
+                    :type="row.item.isActive ? 'success' : 'danger'"
+                    :value="row.item.isActive"
+                    @click="switchDeviceActive(row.item)"
+                  >
+                    {{ row.item.isActive ? 'On' : 'Off' }}
+                  </base-button>
+                </el-tooltip>
                 <base-button
                   size="sm"
                   type="primary"
                   @click="editDevice(row.item)"
-                  >Edit</base-button
                 >
-                <base-button size="sm" type="danger">Delete</base-button>
+                  Edit
+                </base-button>
+                <base-button
+                  size="sm"
+                  type="danger"
+                  @click="deleteDevice(row.item)"
+                >
+                  Delete
+                </base-button>
               </td>
             </template>
           </base-table>
@@ -136,18 +155,23 @@ export default {
         id: "",
         description: "",
         template: "",
+        isActive: true,
       },
-      templates: ["Template 1", "Template 2", "Template 3"],
-      templateSelected: "Template 1",
+      templates: ["Template 1", "Template 2", "Template 3"], // todo: make this dynamic.
+      templateSelected: "Template 1", // default
       devicesTable: [],
     };
   },
   methods: {
     updateTemplateSelected: function (value) {
       this.templateSelected = value;
-      console.log(this.templateSelected);
+    },
+    getDevices: function () {
+      // todo: call api.
     },
     saveDevice: function () {
+      // todo: avoid adding device with same id, avoid empty fields.
+      // todo: call api.
       this.deviceInfo.template = this.templateSelected;
       this.devicesTable.push(Object.assign({}, this.deviceInfo));
       this.cleanDeviceInfo();
@@ -157,14 +181,33 @@ export default {
       this.deviceInfo.id = "";
       this.deviceInfo.description = "";
       this.deviceInfo.template = "";
+      this.deviceInfo.isActive = true;
       this.templateSelected = this.templates[0];
     },
     editDevice: function (item) {
+      // todo: change btn from Save to Update, add Cancel btn, lock row on table.
+      // todo: call api.
       this.deviceInfo.name = item.name;
       this.deviceInfo.id = item.id;
       this.deviceInfo.description = item.description;
       this.deviceInfo.template = item.template;
       this.templateSelected = item.template;
+    },
+    deleteDevice: function (item) {
+      // todo: remove from table.
+      // todo: call api.
+      alert("Delete: " + item);
+    },
+    switchDeviceActive: function (item) {
+      // todo: call api.
+      this.devicesTable = this.devicesTable.map((device) => {
+        if (device.id === item.id) {
+          let isActive = !device.isActive;
+          return { ...device, isActive };
+        } else {
+          return device;
+        }
+      });
     },
   },
 };
