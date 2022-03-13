@@ -1,0 +1,56 @@
+{
+    "widgets": [
+        "Boolean Input/Output",
+        "Indicator"
+    ],
+    "colSizes": [
+        {
+            "value": "col-1",
+            "name": "1"
+        },
+        {
+            "value": "col-2",
+            "name": "2"
+        },
+        {
+            "value": "col-3",
+            "name": "3"
+        },
+        {
+            "value": "col-4",
+            "name": "4"
+        },
+        {
+            "value": "col-5",
+            "name": "5"
+        },
+        {
+            "value": "col-6",
+            "name": "6"
+        },
+        {
+            "value": "col-7",
+            "name": "7"
+        },
+        {
+            "value": "col-8",
+            "name": "8"
+        },
+        {
+            "value": "col-9",
+            "name": "9"
+        },
+        {
+            "value": "col-10",
+            "name": "10"
+        },
+        {
+            "value": "col-11",
+            "name": "11"
+        },
+        {
+            "value": "col-12",
+            "name": "12"
+        }
+    ]
+}

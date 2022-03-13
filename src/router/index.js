@@ -11,7 +11,8 @@ import Tables from "../views/Tables.vue";
 import SamplePage from "../views/SamplePage.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 
-import Devices from "../views/Devices.vue";
+import FormDevices from "../views/FormDevices.vue";
+import FormAddWidgetForm from "../views/FormAddWidget.vue";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -50,7 +51,7 @@ const routes = [
       {
         path: "/devices",
         name: "devices",
-        components: { default: Devices },
+        components: { default: FormDevices },
       },
       {
         path: "/alerts",
@@ -58,9 +59,9 @@ const routes = [
         components: { default: SamplePage },
       },
       {
-        path: "/templates",
-        name: "templates",
-        components: { default: SamplePage },
+        path: "/addWidget",
+        name: "addWidget",
+        components: { default: FormAddWidgetForm },
       },
       { path: "/:pathMatch(.*)*", component: PageNotFound },
     ],

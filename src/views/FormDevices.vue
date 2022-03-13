@@ -16,7 +16,6 @@
         <div class="row">
           <div class="col-md-6">
             <base-input
-              alternative=""
               label="Device name"
               placeholder="Device name"
               input-classes="form-control-alternative"
@@ -25,7 +24,6 @@
           </div>
           <div class="col-md-6">
             <base-input
-              alternative=""
               label="Device ID"
               placeholder="Device ID"
               input-classes="form-control-alternative"
@@ -36,7 +34,7 @@
 
         <div class="row">
           <div class="col-md-6">
-            <base-input alternative="" label="Description">
+            <base-input label="Description">
               <textarea
                 rows="4"
                 class="form-control form-control-alternative"
@@ -46,13 +44,10 @@
             </base-input>
           </div>
           <div class="col-md-6">
+            <label class="form-control-label">Add to dashboard</label><br />
             <base-dropdown>
               <template v-slot:title>
-                <base-button
-                  type="secondary"
-                  class="dropdown-toggle"
-                  style="margin-top: 30px"
-                >
+                <base-button type="secondary" class="dropdown-toggle">
                   {{ templateSelected }}
                 </base-button>
               </template>
@@ -110,7 +105,10 @@
               <td>{{ row.item.description }}</td>
               <td>{{ row.item.template }}</td>
               <td>
-                <el-tooltip placement="left" :content="row.item.isActive ? 'Turn off' : 'Turn on'">
+                <el-tooltip
+                  placement="left"
+                  :content="row.item.isActive ? 'Turn off' : 'Turn on'"
+                >
                   <base-button
                     :key="row.item.id"
                     size="sm"
@@ -119,7 +117,7 @@
                     :value="row.item.isActive"
                     @click="switchDeviceActive(row.item)"
                   >
-                    {{ row.item.isActive ? 'On' : 'Off' }}
+                    {{ row.item.isActive ? "On" : "Off" }}
                   </base-button>
                 </el-tooltip>
                 <base-button
@@ -146,10 +144,14 @@
 </template>
 
 <script>
+import values from "../data/values.json";
 export default {
   name: "devices",
   data() {
     return {
+      templates: values.widgets, // todo: make this dynamic.
+      templateSelected: values.widgets[0], // default
+      devicesTable: [],
       deviceInfo: {
         name: "",
         id: "",
@@ -157,9 +159,6 @@ export default {
         template: "",
         isActive: true,
       },
-      templates: ["Template 1", "Template 2", "Template 3"], // todo: make this dynamic.
-      templateSelected: "Template 1", // default
-      devicesTable: [],
     };
   },
   methods: {

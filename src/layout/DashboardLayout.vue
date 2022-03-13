@@ -15,6 +15,20 @@
         />
         <sidebar-item
           :link="{
+            name: 'Devices',
+            icon: 'ni ni-spaceship text-black',
+            path: '/devices',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Widgets',
+            icon: 'ni ni-app text-primary',
+            path: '/addWidget',
+          }"
+        />
+        <sidebar-item
+          :link="{
             name: 'Tables',
             icon: 'ni ni-bullet-list-67 text-black',
             path: '/tables',
@@ -29,23 +43,9 @@
         />
         <sidebar-item
           :link="{
-            name: 'Devices',
-            icon: 'ni ni-spaceship text-black',
-            path: '/devices',
-          }"
-        />
-        <sidebar-item
-          :link="{
             name: 'Alerts',
             icon: 'ni ni-time-alarm text-info',
             path: '/alerts',
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Templates',
-            icon: 'ni ni-app text-primary',
-            path: '/templates',
           }"
         />
 
