@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const HTTP = require("../../api/http.js");
 
 module.exports = {
@@ -10,19 +11,13 @@ module.exports = {
         localStorage.setItem("iottoken", res.data.token);
         context.commit("setUserToken", res.data.token);
         context.commit("setUserInfo", res.data.userInfo);
-        context.commit("setLoginMessages", {
-          success: res.data.message,
-          failure: "",
-        });
+        context.commit("setLoginMessages", { success: res.data.message, failure: "", });
       })
       .catch((error) => {
         localStorage.setItem("iottoken", null);
         context.commit("setUserToken", null);
         context.commit("setUserInfo", null);
-        context.commit("setLoginMessages", {
-          success: "",
-          failure: "failure: " + error.message,
-        });
+        context.commit("setLoginMessages", { success: "", failure: "failure: " + error.message, });
       });
   },
   register: async function (context, data) {
@@ -32,18 +27,11 @@ module.exports = {
       password: data.password,
     })
       .then((res) => {
-        context.commit("setRegisterMessages", {
-          // eslint-disable-next-line prettier/prettier
-          success: res.data.message + ": created " + res.data.email + ". You can try to login now!",
-          failure: "",
-        });
+        context.commit("setRegisterMessages", { success: res.data.message + ": created " + res.data.email + ". You can try to login now!", failure: "", });
       })
       .catch((error) => {
         context.commit("setUserToken", null);
-        context.commit("setRegisterMessages", {
-          success: "",
-          failure: "failure: " + error.message,
-        });
+        context.commit("setRegisterMessages", { success: "", failure: "failure: " + error.message, });
       });
   },
   logout: function () {

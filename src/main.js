@@ -15,6 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+require("dotenv").config();
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
@@ -22,8 +23,12 @@ import ArgonDashboard from "./plugins/argon-dashboard";
 import "element-plus/lib/theme-chalk/index.css";
 import store from "./store/index.js";
 
+// toast
+import Toaster from "@meforma/vue-toaster";
+
 const appInstance = createApp(App);
 appInstance.use(store);
 appInstance.use(router);
 appInstance.use(ArgonDashboard);
+appInstance.use(Toaster);
 appInstance.mount("#app");

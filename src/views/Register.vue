@@ -63,8 +63,10 @@
   </div>
 </template>
 <script>
+import toastMixin from "../mixin/toastMixin.js";
 export default {
   name: "register",
+  mixins: [toastMixin],
   data() {
     return {
       name: "",

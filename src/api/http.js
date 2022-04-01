@@ -1,9 +1,10 @@
 const axios = require("axios");
+const VUE_APP_BACKEND_URL = process.env.VUE_APP_BACKEND_URL;
 
 const HTTP = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: `${VUE_APP_BACKEND_URL}`,
   headers: {
-    Authorization: "Bearer {token}",
+    token: localStorage.getItem("iottoken"),
   },
 });
 

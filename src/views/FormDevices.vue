@@ -88,7 +88,7 @@
             class="table align-items-center table-flush"
             thead-classes="thead-light"
             tbody-classes="list"
-            :data="devicesTable"
+            :data="devicesList"
           >
             <template v-slot:columns>
               <th>Name</th>
@@ -101,9 +101,9 @@
 
             <template v-slot:default="row">
               <td>{{ row.item.name }}</td>
-              <td>{{ row.item.id }}</td>
+              <td>{{ row.item._id }}</td>
               <td>{{ row.item.description }}</td>
-              <td>{{ row.item.template }}</td>
+              <td>{{ row.item.templateName }}</td>
               <td>
                 <el-tooltip
                   placement="left"
@@ -145,8 +145,11 @@
 
 <script>
 import values from "../data/values.json";
+import toastMixin from "../mixin/toastMixin.js";
+
 export default {
   name: "devices",
+  mixins: [toastMixin],
   data() {
     return {
       templates: values.widgets, // todo: make this dynamic.
@@ -161,19 +164,33 @@ export default {
       },
     };
   },
+  created: function () {
+    this.getAllUserDevices();
+  },
+  computed: {
+    devicesList: function () {
+      return this.$store.getters["device/getDevices"];
+    },
+  },
   methods: {
     updateTemplateSelected: function (value) {
       this.templateSelected = value;
     },
-    getDevices: function () {
-      // todo: call api.
+    getAllUserDevices: async function () {
+      await this.$store.dispatch("device/getAllUserDevices");
+      this.toast("Devices list updated!", "success");
     },
-    saveDevice: function () {
-      // todo: avoid adding device with same id, avoid empty fields.
-      // todo: call api.
+    saveDevice: async function () {
+      await this.$store.dispatch("device/createDevice", {
+        name: this.deviceInfo.name,
+        templateID: this.deviceInfo.id,
+        templateName: this.deviceInfo.template,
+        description: this.deviceInfo.description,
+      });
       this.deviceInfo.template = this.templateSelected;
-      this.devicesTable.push(Object.assign({}, this.deviceInfo));
       this.cleanDeviceInfo();
+      this.toast("Device saved!", "success");
+      this.getAllUserDevices();
     },
     cleanDeviceInfo: function () {
       this.deviceInfo.name = "";
@@ -192,10 +209,10 @@ export default {
       this.deviceInfo.template = item.template;
       this.templateSelected = item.template;
     },
-    deleteDevice: function (item) {
-      // todo: remove from table.
-      // todo: call api.
-      alert("Delete: " + item);
+    deleteDevice: async function (item) {
+      await this.$store.dispatch("device/deleteDevice", item);
+      this.getAllUserDevices();
+      this.toast("Device deleted!", "success");
     },
     switchDeviceActive: function (item) {
       // todo: call api.
