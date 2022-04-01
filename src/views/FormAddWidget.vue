@@ -174,45 +174,37 @@
 
         <!-- ADD -->
 
-        <div class="row">
-          <div class="card" :class="[colSizesSelected]">
-            <div class="col-md-6">
-              <base-button type="default" @click="addWidget">Add</base-button>
-            </div>
-          </div>
-        </div>
+        <base-button type="default" @click="addWidget">Add</base-button>
       </card>
     </div>
 
     <!-- PREVIEW -->
 
-    <div class="row">
-      <div
-        v-for="(widget, index) of widgetsArray"
-        :class="widget.columnSize"
-        :key="index"
-      >
-        <i
-          aria-hidden="true"
-          class="fa fa-trash text-warning pull-right"
-          @click="removeWidget(index)"
-          style="margin-bottom: 10px"
-        ></i>
+    <div class="container">
+      <div class="row">
+        <div v-for="(widget, index) of widgetsArray" :key="index">
+          <i
+            aria-hidden="true"
+            class="fa fa-trash text-warning pull-right"
+            @click="removeWidget(index)"
+            style="margin-bottom: 10px"
+          ></i>
 
-        <widget-boolean-input-output
-          v-if="widget.widget == 'booleaninputoutput'"
-          :config="widget"
-        ></widget-boolean-input-output>
+          <widget-boolean-input-output
+            v-if="widget.widget == 'booleaninputoutput'"
+            :config="widget"
+          ></widget-boolean-input-output>
 
-        <widget-indicator
-          v-if="widget.widget == 'indicator'"
-          :config="widget"
-        ></widget-indicator>
+          <widget-indicator
+            v-if="widget.widget == 'indicator'"
+            :config="widget"
+          ></widget-indicator>
+        </div>
       </div>
-    </div>
 
-    <div class="add-margin">
-      <pre>{{ widgetsArray }}</pre>
+      <div class="add-margin">
+        <pre>{{ widgetsArray }}</pre>
+      </div>
     </div>
   </div>
 </template>
@@ -291,6 +283,9 @@ export default {
       Object.keys(configObj).forEach((key) => {
         configObj[key] = "";
       });
+    },
+    removeWidget(index) {
+      this.widgetsArray.splice(index, 1);
     },
   },
 };

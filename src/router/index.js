@@ -92,4 +92,13 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach(async (to) => { // middleware to check if user is authenticated.
+  let tkn = localStorage.getItem("iottoken");
+  if (!tkn && to.name !== "login") {
+    return { name: "login" };
+  } else if (tkn && to.name === "login") {
+    return { name: "dashboard" };
+  }
+});
+
 export default router;
