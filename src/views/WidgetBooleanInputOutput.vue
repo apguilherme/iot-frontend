@@ -1,21 +1,21 @@
 <template>
-  <div class="card" :class="[config.size]">
+  <div class="card">
     <div class="box">
-      <h2>{{ config.title }}</h2>
+      <h2>{{ widget.title }}</h2>
       <i
         class="icon-size fa"
-        :class="[config.icon, getStateColor]"
-        @click="sendToTopic"
+        :class="[widget.icon, getStateColor]"
+        @click="sendToTopic(widget)"
       ></i>
     </div>
-    <p>{{ config.description }}</p>
+    <p>{{ widget.description }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["config"],
-  name: "BooleanInputOutput",
+  props: ["widget"],
+  name: "WidgetBooleanInputOutput",
   data() {
     return {
       payload: null,
@@ -23,15 +23,16 @@ export default {
   },
   mounted() {
     // userid/deviceid/uniquestr
-    this.payload = this.$props.config.payload;
+    this.payload = this.$props.widget.payload;
   },
   methods: {
-    sendToTopic: function () {
+    sendToTopic: function (widget) {
       // toggle
-      this.payload = !this.$props.config.payload;
-      this.$props.config.payload = this.payload;
+      this.payload = !this.$props.widget.payload;
+      this.$props.widget.payload = this.payload;
+      let user = this.$store.getters["user/getUserInfo"];
       const data = {
-        topic: `${this.$props.config.userID}/${this.$props.config.deviceID}/${this.$props.config.uniqueStr}`,
+        topic: `${user.id}/${widget.device}`,
         payload: {
           value: this.payload,
         },
@@ -42,7 +43,7 @@ export default {
   },
   computed: {
     getStateColor: function () {
-      return this.config.payload ? "on" : "off";
+      return this.widget.payload ? "on" : "off";
     },
   },
 };
@@ -54,6 +55,8 @@ export default {
   padding: 30px;
   margin: 20px;
   transition: all 0.3s ease-out;
+  min-height: 200px;
+  min-width: 200px;
 }
 i {
   cursor: pointer;

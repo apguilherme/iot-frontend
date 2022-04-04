@@ -1,17 +1,17 @@
 <template>
-  <div class="card" :class="[config.size]">
+  <div class="card">
     <div class="box">
-      <h2>{{ config.name }}</h2>
-      <i class="icon-size fa" :class="[config.icon]"></i>
+      <h2>{{ widget.name }}</h2>
+      <i class="icon-size fa" :class="[widget.icon]"></i>
     </div>
-    <p>{{ config.description }} {{ config.unit }}</p>
+    <p>{{ widget.description }} {{ widget.unit }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["config"],
-  name: "Indicator",
+  props: ["widget"],
+  name: "WidgetIndicator",
   data() {
     return {
       payload: null,
@@ -19,7 +19,7 @@ export default {
   },
   mounted() {
     // userid/deviceid/uniquestr
-    this.payload = this.$props.config.payload;
+    this.payload = this.$props.widget.payload;
   },
 };
 </script>
@@ -28,8 +28,10 @@ export default {
   border-radius: 5px;
   box-shadow: 7px 7px 13px 0px rgba(50, 50, 50, 0.22);
   padding: 30px;
-  margin: 20px;
+  margin: 10px;
   transition: all 0.3s ease-out;
+  min-height: 200px;
+  min-width: 200px;
 }
 .card p {
   color: #777777;

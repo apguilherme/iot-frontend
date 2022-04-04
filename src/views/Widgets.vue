@@ -1,7 +1,75 @@
 <template>
   <div>
-    <!-- TEMPLATE FORM -->
+    <!-- DASHBOARDS TABLE -->
+    <div class="add-margin">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Dashboards</h3>
+            </div>
+          </div>
+        </div>
 
+        <div class="table-responsive">
+          <base-table
+            class="table align-items-center table-flush"
+            thead-classes="thead-light"
+            tbody-classes="list"
+            :data="dashboardsList"
+          >
+            <template v-slot:columns>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th># Widgets</th>
+              <th>Actions</th>
+              <th></th>
+            </template>
+
+            <template v-slot:default="row">
+              <td>{{ row.item._id }}</td>
+              <td>{{ row.item.name }}</td>
+              <td>{{ row.item.description }}</td>
+              <td>{{ row.item.widgets.length }}</td>
+              <td>
+                <el-tooltip
+                  placement="left"
+                  :content="row.item.isActive ? 'Turn off' : 'Turn on'"
+                >
+                  <base-button
+                    :key="row.item.id"
+                    size="sm"
+                    outline
+                    :type="row.item.isActive ? 'success' : 'danger'"
+                    :value="row.item.isActive"
+                    @click="switchDashboardActive(row.item)"
+                  >
+                    {{ row.item.isActive ? "On" : "Off" }}
+                  </base-button>
+                </el-tooltip>
+                <base-button
+                  size="sm"
+                  type="primary"
+                  @click="editDashboard(row.item)"
+                >
+                  Edit
+                </base-button>
+                <base-button
+                  size="sm"
+                  type="danger"
+                  @click="deleteDashboard(row.item)"
+                >
+                  Delete
+                </base-button>
+              </td>
+            </template>
+          </base-table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARDS FORM -->
     <div v-if="!hasDevices">
       <h3>Please, create some devices before adding widgets to a Dashboard.</h3>
     </div>
@@ -105,40 +173,38 @@
           </div>
         </div>
 
-        <div>
-          <div class="column">
-            <div class="col-md-6">
-              <base-input
-                label="Name"
-                placeholder="Your widget name"
-                input-classes="form-control-alternative"
-                v-model="widget.name"
-              />
-            </div>
-            <div class="col-md-6">
-              <base-input
-                label="Description"
-                placeholder="Your widget description"
-                input-classes="form-control-alternative"
-                v-model="widget.description"
-              />
-            </div>
-            <div class="col-md-6">
-              <base-input
-                label="Time interval (in minutes)"
-                placeholder="60"
-                input-classes="form-control-alternative"
-                v-model="widget.timeInterval"
-              />
-            </div>
-            <div class="col-md-6" v-if="widgetSelected === 'Indicator'">
-              <base-input
-                label="Unit"
-                placeholder="L, km, lb, kg"
-                input-classes="form-control-alternative"
-                v-model="widget.unit"
-              />
-            </div>
+        <div class="column">
+          <div class="col-md-6">
+            <base-input
+              label="Name"
+              placeholder="Your widget name"
+              input-classes="form-control-alternative"
+              v-model="widget.name"
+            />
+          </div>
+          <div class="col-md-6">
+            <base-input
+              label="Description"
+              placeholder="Your widget description"
+              input-classes="form-control-alternative"
+              v-model="widget.description"
+            />
+          </div>
+          <div class="col-md-6">
+            <base-input
+              label="Time interval (in minutes)"
+              placeholder="60"
+              input-classes="form-control-alternative"
+              v-model="widget.timeInterval"
+            />
+          </div>
+          <div class="col-md-6" v-if="widgetSelected === 'Indicator'">
+            <base-input
+              label="Unit"
+              placeholder="L, km, lb, kg"
+              input-classes="form-control-alternative"
+              v-model="widget.unit"
+            />
           </div>
 
           <!-- PREVIEW WIDGET -->
@@ -146,27 +212,26 @@
             <div :class="widget.size">
               <widget-boolean-input-output
                 v-if="widgetSelected === 'Boolean Input/Output'"
-                :config="widget"
+                :widget="widget"
               ></widget-boolean-input-output>
               <widget-indicator
                 v-if="widgetSelected === 'Indicator'"
-                :config="widget"
+                :widget="widget"
               ></widget-indicator>
             </div>
           </div>
         </div>
 
         <!-- ADD -->
-
         <base-button type="default" @click="addWidgetToPreview">
           Add to preview
         </base-button>
       </card>
     </div>
 
-    <!-- PREVIEW DASHBOARD -->
-
-    <div class="container" v-if="hasDevices">
+    <!-- DASHBOARD PREVIEW -->
+    <div class="container" v-if="hasDevices && widgetsArray.length !== 0">
+      <hr />
       <div class="row">
         <div class="col-md-4">
           <base-input
@@ -188,30 +253,11 @@
       <base-button type="default" @click="saveDashboard">
         Save dashboard
       </base-button>
-      <div class="row">
-        <div v-for="(widget, index) of widgetsArray" :key="index">
-          <i
-            aria-hidden="true"
-            class="fa fa-trash text-warning pull-right"
-            @click="removeWidget(index)"
-            style="margin-bottom: 10px"
-          ></i>
-
-          <widget-boolean-input-output
-            v-if="widgetSelected == 'Boolean Input/Output'"
-            :config="widget"
-          ></widget-boolean-input-output>
-
-          <widget-indicator
-            v-if="widgetSelected == 'Indicator'"
-            :config="widget"
-          ></widget-indicator>
-        </div>
-      </div>
-
-      <div class="add-margin">
-        <pre>{{ widgetsArray }}</pre>
-      </div>
+      <hr />
+      <dashboard-generator
+        :dashboard="dashboard"
+        :widgets="widgetsArray"
+      ></dashboard-generator>
     </div>
   </div>
 </template>
@@ -219,13 +265,14 @@
 <script>
 import WidgetBooleanInputOutput from "./WidgetBooleanInputOutput.vue";
 import WidgetIndicator from "./WidgetIndicator.vue";
+import DashboardGenerator from "./DashboardGenerator.vue";
 import values from "../data/values.json";
 import toastMixin from "../mixin/toastMixin.js";
 
 export default {
-  name: "AddWidgetForm",
+  name: "Widgets",
   mixins: [toastMixin],
-  components: { WidgetBooleanInputOutput, WidgetIndicator },
+  components: { WidgetBooleanInputOutput, WidgetIndicator, DashboardGenerator },
   data() {
     return {
       colSizes: values.colSizes,
@@ -265,10 +312,14 @@ export default {
   },
   created: function () {
     this.getAllUserDevices();
+    this.getAllUserDashboards();
   },
   computed: {
     devicesList: function () {
       return this.$store.getters["device/getDevices"];
+    },
+    dashboardsList: function () {
+      return this.$store.getters["dashboard/getDashboards"];
     },
     hasDevices: function () {
       return this.$store.getters["device/getDevices"] !== null;
@@ -281,9 +332,13 @@ export default {
     getAllUserDevices: async function () {
       await this.$store.dispatch("device/getAllUserDevices");
     },
+    getAllUserDashboards: async function () {
+      await this.$store.dispatch("dashboard/getAllUserDashboards");
+      this.toast("Dashboards list updated!", "success");
+    },
     updateDeviceSelected: function (name, device) {
       this.deviceSelected = name;
-      this.widget.deviceID = device._id;
+      this.widget.device = device._id;
     },
     updateIconSelected: function (value) {
       this.iconSelected = value;
@@ -291,7 +346,8 @@ export default {
     },
     updateWidgetSelected: function (value) {
       this.widgetSelected = value;
-      this.widget = this.widgetDefault; // "clean".
+      let clone = JSON.parse(JSON.stringify(this.widgetDefault));
+      this.widget = clone; // "clean".
       this.widget.type = value;
     },
     updateSize: function (value) {
@@ -299,18 +355,22 @@ export default {
       this.widget.size = value.value;
     },
     addWidgetToPreview: function () {
+      if (this.widget.device === "") {
+        this.toast("Missing device. Please select one.", "error");
+        return;
+      }
+      if (this.widget.type === "") {
+        this.toast("Missing widget type. Please select one.", "error");
+        return;
+      }
       let clone = JSON.parse(JSON.stringify(this.widget));
       this.widgetsArray.push(clone);
     },
-    clearConfig(configObj) {
-      Object.keys(configObj).forEach((key) => {
-        configObj[key] = "";
-      });
-    },
-    removeWidget(index) {
-      this.widgetsArray.splice(index, 1);
-      // call api.
-    },
+    // clearConfig(configObj) {
+    //   Object.keys(configObj).forEach((key) => {
+    //     configObj[key] = "";
+    //   });
+    // },
     saveDashboard: async function () {
       if (
         this.dashboard.name === "" ||
@@ -325,6 +385,21 @@ export default {
         description: this.dashboard.description,
         widgets: this.widgetsArray,
       });
+    },
+    deleteDashboard: async function (item) {
+      await this.$store.dispatch("dashboard/deleteDashboard", item._id);
+      this.getAllUserDevices();
+      this.toast("Device deleted!", "success");
+    },
+    editDashboard: function () {
+      alert("edit");
+    },
+    switchDashboardActive: async function (item) {
+      await this.$store.dispatch("dashboard/updateActiveDashboard", {
+        dashboardID: item._id,
+        isActive: !item.isActive,
+      });
+      this.getAllUserDashboards();
     },
   },
 };

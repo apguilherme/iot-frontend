@@ -1,56 +1,6 @@
 <template>
   <div>
-    <!-- DEVICE FORM -->
-
-    <div class="add-margin">
-      <card shadow type="secondary">
-        <template v-slot:header>
-          <div class="bg-white border-0">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h3 class="mb-0">Add new device</h3>
-              </div>
-            </div>
-          </div>
-        </template>
-        <div class="column">
-          <div class="col-md-6">
-            <base-input
-              label="Device name"
-              placeholder="Device name"
-              input-classes="form-control-alternative"
-              v-model="deviceInfo.name"
-            />
-          </div>
-          <div class="col-md-6">
-            <base-input label="Description">
-              <textarea
-                rows="4"
-                class="form-control form-control-alternative"
-                placeholder="Description"
-                v-model="deviceInfo.description"
-              ></textarea>
-            </base-input>
-          </div>
-          <br />
-          <div class="row">
-            <div class="col-md-1">
-              <base-button type="default" @click="saveDevice">{{
-                editID ? "Update" : "Save"
-              }}</base-button>
-            </div>
-            <div class="col-md-1">
-              <base-button type="secondary" @click="cleanDeviceInfo">
-                Clean
-              </base-button>
-            </div>
-          </div>
-        </div>
-      </card>
-    </div>
-
     <!-- TABLE -->
-
     <div class="add-margin">
       <div class="card shadow">
         <div class="card-header border-0">
@@ -69,7 +19,7 @@
             :data="devicesList"
           >
             <template v-slot:columns>
-              <th>Device ID</th>
+              <th>ID</th>
               <th>Name</th>
               <th>Description</th>
               <th>Owner</th>
@@ -118,6 +68,54 @@
         </div>
       </div>
     </div>
+
+    <!-- DEVICE FORM -->
+    <div class="add-margin">
+      <card shadow type="secondary">
+        <template v-slot:header>
+          <div class="bg-white border-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Add new device</h3>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div class="column">
+          <div class="col-md-6">
+            <base-input
+              label="Device name"
+              placeholder="Device name"
+              input-classes="form-control-alternative"
+              v-model="deviceInfo.name"
+            />
+          </div>
+          <div class="col-md-6">
+            <base-input label="Description">
+              <textarea
+                rows="4"
+                class="form-control form-control-alternative"
+                placeholder="Description"
+                v-model="deviceInfo.description"
+              ></textarea>
+            </base-input>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-1">
+              <base-button type="default" @click="saveDevice">{{
+                editID ? "Update" : "Save"
+              }}</base-button>
+            </div>
+            <div class="col-md-1">
+              <base-button type="secondary" @click="cleanDeviceInfo">
+                Clean
+              </base-button>
+            </div>
+          </div>
+        </div>
+      </card>
+    </div>
   </div>
 </template>
 
@@ -125,7 +123,7 @@
 import toastMixin from "../mixin/toastMixin.js";
 
 export default {
-  name: "devices",
+  name: "Devices",
   mixins: [toastMixin],
   data() {
     return {

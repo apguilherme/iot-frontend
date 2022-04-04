@@ -24,7 +24,7 @@
           :link="{
             name: 'Widgets',
             icon: 'ni ni-app text-primary',
-            path: '/addWidget',
+            path: '/widgets',
           }"
         />
         <sidebar-item

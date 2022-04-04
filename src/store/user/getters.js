@@ -8,7 +8,7 @@ module.exports = {
   getUserInfo: function () {
     let token = localStorage.getItem("iottoken");
     let decoded = jwt.decode(token);
-    return decoded.userInfo;
+    return decoded;
   },
   getLoginMessages: function (context) {
     return context.loginMessages;

@@ -1,0 +1,60 @@
+<template>
+  <div class="container" v-if="widgetsArray.length">
+    <h1>{{ dashboard.name }}</h1>
+    <h4>{{ dashboard.description }}</h4>
+    <div class="col-md-12">
+      <div class="row">
+        <div
+          v-for="(widget, index) of widgetsArray"
+          :key="index"
+          :class="widget.size"
+        >
+          <i
+            aria-hidden="true"
+            class="fa fa-trash text-warning pull-right"
+            @click="removeWidgetFromPreview(index)"
+            style="margin-bottom: 10px"
+          ></i>
+
+          <widget-boolean-input-output
+            v-if="widget.type == 'Boolean Input/Output'"
+            :widget="widget"
+          ></widget-boolean-input-output>
+
+          <widget-indicator
+            v-if="widget.type == 'Indicator'"
+            :widget="widget"
+          ></widget-indicator>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-margin">
+      <pre>{{ widgetsArray }}</pre>
+    </div>
+  </div>
+</template>
+
+<script>
+import WidgetBooleanInputOutput from "./WidgetBooleanInputOutput.vue";
+import WidgetIndicator from "./WidgetIndicator.vue";
+export default {
+  props: ["dashboard", "widgets"],
+  name: "DashboardGenerator",
+  components: { WidgetBooleanInputOutput, WidgetIndicator },
+  data() {
+    return {
+      widgetsArray: this.widgets,
+    };
+  },
+  mounted() {},
+  methods: {
+    removeWidgetFromPreview(index) {
+      this.widgetsArray.splice(index, 1);
+    },
+  },
+  computed: {},
+};
+</script>
+<style scoped>
+</style>
