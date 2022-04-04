@@ -88,14 +88,14 @@
 
         <div class="row">
           <div class="col-md-3">
-            <label class="form-control-label">Select a widget</label><br />
+            <label class="form-control-label">Select a widget type</label><br />
             <base-dropdown>
               <template v-slot:title>
                 <base-button
                   type="secondary"
                   class="dropdown-toggle space-select"
                 >
-                  {{ widgetSelected }}
+                  {{ widgetSelected ? widgetSelected : "Select widget" }}
                 </base-button>
               </template>
               <a
@@ -116,7 +116,7 @@
                   type="secondary"
                   class="dropdown-toggle space-select"
                 >
-                  {{ deviceSelected ? deviceSelected : devicesList[0].name }}
+                  {{ deviceSelected ? deviceSelected : "Select device" }}
                 </base-button>
               </template>
               <a
@@ -277,7 +277,7 @@ export default {
     return {
       colSizes: values.colSizes,
       widgets: values.widgets,
-      widgetSelected: values.widgets[0], // default
+      widgetSelected: "", // default
       icons: values.icons,
       iconSelected: values.icons[0], // default
       widgetsArray: [],
@@ -349,18 +349,19 @@ export default {
       let clone = JSON.parse(JSON.stringify(this.widgetDefault));
       this.widget = clone; // "clean".
       this.widget.type = value;
+      this.deviceSelected = "";
     },
     updateSize: function (value) {
       this.colSizesSelected = value.name;
       this.widget.size = value.value;
     },
     addWidgetToPreview: function () {
-      if (this.widget.device === "") {
-        this.toast("Missing device. Please select one.", "error");
-        return;
-      }
       if (this.widget.type === "") {
         this.toast("Missing widget type. Please select one.", "error");
+        return;
+      }
+      if (this.widget.device === "") {
+        this.toast("Missing device. Please select one.", "error");
         return;
       }
       let clone = JSON.parse(JSON.stringify(this.widget));
@@ -385,14 +386,16 @@ export default {
         description: this.dashboard.description,
         widgets: this.widgetsArray,
       });
+      this.getAllUserDashboards();
     },
     deleteDashboard: async function (item) {
       await this.$store.dispatch("dashboard/deleteDashboard", item._id);
-      this.getAllUserDevices();
+      this.getAllUserDashboards();
       this.toast("Device deleted!", "success");
     },
     editDashboard: function () {
       alert("edit");
+      // todo: populate widgetsArray with selected dashboard widgets, possible to delete or edit using form.
     },
     switchDashboardActive: async function (item) {
       await this.$store.dispatch("dashboard/updateActiveDashboard", {
