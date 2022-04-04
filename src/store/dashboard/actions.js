@@ -2,30 +2,18 @@
 const HTTP = require("../../api/http.js");
 
 module.exports = {
-  getAllUserDevices: async function (context) {
-    HTTP.get("/api/devices/all")
+  getAllUserDashboards: async function (context) {
+    HTTP.get("/api/dashboards/all")
       .then((res) => {
-        context.commit("setDevices", res.data.devices);
+        context.commit("setDashboards", res.data.dashboards);
       })
       .catch((error) => {
         console.log(error)
-        context.commit("setDevices", null);
+        context.commit("setDashboards", null);
       });
   },
-  deleteDevice: async function (context, deviceID) {
-    HTTP.delete(`/api/devices/delete/${deviceID}`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error)
-      });
-  },
-  createDevice: async function (context, data) {
-    HTTP.post("/api/devices/create", {
-      "name": data.name,
-      "description": data.description
-    })
+  deleteDashboard: async function (context, dashboardID) {
+    HTTP.delete(`/api/dashboards/delete/${dashboardID}`)
       .then((res) => {
         console.log(res);
       })
@@ -33,10 +21,11 @@ module.exports = {
         console.log(error)
       });
   },
-  updateDevice: async function (context, data) {
-    HTTP.put(`/api/devices/update/${data.deviceID}`, {
+  createDashboard: async function (context, data) {
+    HTTP.post("/api/dashboards/create", {
       "name": data.name,
       "description": data.description,
+      "widgets": data.widgets,
     })
       .then((res) => {
         console.log(res);
@@ -45,8 +34,21 @@ module.exports = {
         console.log(error)
       });
   },
-  updateActiveDevice: async function (context, data) {
-    HTTP.put(`/api/devices/update/${data.deviceID}`, {
+  updateDashboard: async function (context, data) {
+    HTTP.put(`/api/dashboards/update/${data.dashboardID}`, {
+      "name": data.name,
+      "description": data.description,
+      "widgets": data.widgets,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+  },
+  updateActiveDashboard: async function (context, data) {
+    HTTP.put(`/api/dashboards/update/${data.dashboardID}`, {
       "isActive": data.isActive,
     })
       .then((res) => {

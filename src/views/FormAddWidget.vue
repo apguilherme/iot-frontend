@@ -2,7 +2,11 @@
   <div>
     <!-- TEMPLATE FORM -->
 
-    <div class="add-margin">
+    <div v-if="!hasDevices">
+      <h3>Please, create some devices before adding widgets to a Dashboard.</h3>
+    </div>
+
+    <div class="add-margin" v-if="hasDevices">
       <card shadow type="secondary">
         <template v-slot:header>
           <div class="bg-white border-0">
@@ -15,8 +19,8 @@
         </template>
 
         <div class="row">
-          <div class="col-md-4">
-            <label class="form-control-label">Widget type</label><br />
+          <div class="col-md-3">
+            <label class="form-control-label">Select a widget</label><br />
             <base-dropdown>
               <template v-slot:title>
                 <base-button
@@ -27,160 +31,163 @@
                 </base-button>
               </template>
               <a
-                v-for="t in widgets"
-                :key="t"
+                v-for="widget in widgets"
+                :key="widget"
                 class="dropdown-item"
-                :value="t"
-                @click="updateWidgetSelected(t)"
-                >{{ t }}
+                :value="widget"
+                @click="updateWidgetSelected(widget)"
+                >{{ widget }}
+              </a>
+            </base-dropdown>
+          </div>
+          <div class="col-md-3">
+            <label class="form-control-label">Select a device</label><br />
+            <base-dropdown>
+              <template v-slot:title>
+                <base-button
+                  type="secondary"
+                  class="dropdown-toggle space-select"
+                >
+                  {{ deviceSelected ? deviceSelected : devicesList[0].name }}
+                </base-button>
+              </template>
+              <a
+                v-for="device in devicesList"
+                :key="device._id"
+                class="dropdown-item"
+                :value="device._id"
+                @click="updateDeviceSelected(device.name, device)"
+                >{{ device.name }}
+              </a>
+            </base-dropdown>
+          </div>
+          <div class="col-md-3">
+            <label class="form-control-label">Select an icon</label><br />
+            <base-dropdown>
+              <template v-slot:title>
+                <base-button
+                  type="secondary"
+                  class="dropdown-toggle space-select"
+                >
+                  {{ iconSelected }}
+                  <i class="icon-size fa" :class="[widget.icon]"></i>
+                </base-button>
+              </template>
+              <a
+                v-for="icon in icons"
+                :key="icon"
+                class="dropdown-item"
+                :value="widget"
+                @click="updateIconSelected(icon)"
+              >
+                {{ icon }}
+                <i :class="iconDisplay(icon)"></i>
+              </a>
+            </base-dropdown>
+          </div>
+          <div class="col-md-3">
+            <label class="form-control-label">Widget size</label><br />
+            <base-dropdown>
+              <template v-slot:title>
+                <base-button type="secondary" class="dropdown-toggle">
+                  {{ colSizesSelected }}
+                </base-button>
+              </template>
+              <a
+                v-for="size in colSizes"
+                :key="size.value"
+                class="dropdown-item"
+                :value="size.value"
+                @click="updateSize(size)"
+                >{{ size.name }}
               </a>
             </base-dropdown>
           </div>
         </div>
 
-        <!-- BooleanInputOutput FORM -->
-
-        <div v-if="widgetSelected === 'Boolean Input/Output'">
-          <div class="row">
-            <div class="col-md-4">
+        <div>
+          <div class="column">
+            <div class="col-md-6">
               <base-input
-                label="Title"
-                placeholder="Your widget title"
+                label="Name"
+                placeholder="Your widget name"
                 input-classes="form-control-alternative"
-                v-model="configBooleanInputOutput.title"
+                v-model="widget.name"
               />
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <base-input
-                label="Text"
-                placeholder="Your widget text"
+                label="Description"
+                placeholder="Your widget description"
                 input-classes="form-control-alternative"
-                v-model="configBooleanInputOutput.text"
+                v-model="widget.description"
               />
             </div>
-            <div class="col-md-4">
-              <base-input
-                label="Icon"
-                placeholder="Your widget icon"
-                input-classes="form-control-alternative"
-                v-model="configBooleanInputOutput.icon"
-              />
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <base-input
                 label="Time interval (in minutes)"
                 placeholder="60"
                 input-classes="form-control-alternative"
-                v-model="configBooleanInputOutput.timeInterval"
+                v-model="widget.timeInterval"
               />
             </div>
-            <div class="col-md-4">
-              <label class="form-control-label">Widget size</label><br />
-              <base-dropdown>
-                <template v-slot:title>
-                  <base-button type="secondary" class="dropdown-toggle">
-                    {{ colSizesSelected }}
-                  </base-button>
-                </template>
-                <a
-                  v-for="s in colSizes"
-                  :key="s.value"
-                  class="dropdown-item"
-                  :value="s.value"
-                  @click="updateSize(s)"
-                  >{{ s.name }}
-                </a>
-              </base-dropdown>
-            </div>
-          </div>
-          <div class="row">
-            <div :class="configBooleanInputOutput.columnSize">
-              <widget-boolean-input-output
-                :config="configBooleanInputOutput"
-              ></widget-boolean-input-output>
-            </div>
-          </div>
-        </div>
-
-        <!-- Indicator FORM -->
-
-        <div v-if="widgetSelected === 'Indicator'">
-          <div class="row">
-            <div class="col-md-4">
-              <base-input
-                label="Title"
-                placeholder="Your widget title"
-                input-classes="form-control-alternative"
-                v-model="configIndicator.title"
-              />
-            </div>
-            <div class="col-md-4">
-              <base-input
-                label="Text"
-                placeholder="Your widget text"
-                input-classes="form-control-alternative"
-                v-model="configIndicator.text"
-              />
-            </div>
-            <div class="col-md-4">
-              <base-input
-                label="Icon"
-                placeholder="Your widget icon"
-                input-classes="form-control-alternative"
-                v-model="configIndicator.icon"
-              />
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6" v-if="widgetSelected === 'Indicator'">
               <base-input
                 label="Unit"
-                placeholder="Data unit"
+                placeholder="L, km, lb, kg"
                 input-classes="form-control-alternative"
-                v-model="configIndicator.unit"
+                v-model="widget.unit"
               />
-            </div>
-            <div class="col-md-4">
-              <base-input
-                label="Time interval (in minutes)"
-                placeholder="60"
-                input-classes="form-control-alternative"
-                v-model="configIndicator.timeInterval"
-              />
-            </div>
-            <div class="col-md-4">
-              <label class="form-control-label">Widget size</label><br />
-              <base-dropdown>
-                <template v-slot:title>
-                  <base-button type="secondary" class="dropdown-toggle">
-                    {{ colSizesSelected }}
-                  </base-button>
-                </template>
-                <a
-                  v-for="s in colSizes"
-                  :key="s.value"
-                  class="dropdown-item"
-                  :value="s.value"
-                  @click="updateSize(s)"
-                  >{{ s.name }}
-                </a>
-              </base-dropdown>
             </div>
           </div>
+
+          <!-- PREVIEW WIDGET -->
           <div class="row">
-            <div :class="configIndicator.columnSize">
-              <widget-indicator :config="configIndicator"></widget-indicator>
+            <div :class="widget.size">
+              <widget-boolean-input-output
+                v-if="widgetSelected === 'Boolean Input/Output'"
+                :config="widget"
+              ></widget-boolean-input-output>
+              <widget-indicator
+                v-if="widgetSelected === 'Indicator'"
+                :config="widget"
+              ></widget-indicator>
             </div>
           </div>
         </div>
 
         <!-- ADD -->
 
-        <base-button type="default" @click="addWidget">Add</base-button>
+        <base-button type="default" @click="addWidgetToPreview">
+          Add to preview
+        </base-button>
       </card>
     </div>
 
-    <!-- PREVIEW -->
+    <!-- PREVIEW DASHBOARD -->
 
-    <div class="container">
+    <div class="container" v-if="hasDevices">
+      <div class="row">
+        <div class="col-md-4">
+          <base-input
+            label="Name"
+            placeholder="Your dashboard name"
+            input-classes="form-control-alternative"
+            v-model="dashboard.name"
+          />
+        </div>
+        <div class="col-md-4">
+          <base-input
+            label="Description"
+            placeholder="Your dashboard description"
+            input-classes="form-control-alternative"
+            v-model="dashboard.description"
+          />
+        </div>
+      </div>
+      <base-button type="default" @click="saveDashboard">
+        Save dashboard
+      </base-button>
       <div class="row">
         <div v-for="(widget, index) of widgetsArray" :key="index">
           <i
@@ -191,12 +198,12 @@
           ></i>
 
           <widget-boolean-input-output
-            v-if="widget.widget == 'booleaninputoutput'"
+            v-if="widgetSelected == 'Boolean Input/Output'"
             :config="widget"
           ></widget-boolean-input-output>
 
           <widget-indicator
-            v-if="widget.widget == 'indicator'"
+            v-if="widgetSelected == 'Indicator'"
             :config="widget"
           ></widget-indicator>
         </div>
@@ -213,70 +220,86 @@
 import WidgetBooleanInputOutput from "./WidgetBooleanInputOutput.vue";
 import WidgetIndicator from "./WidgetIndicator.vue";
 import values from "../data/values.json";
+import toastMixin from "../mixin/toastMixin.js";
+
 export default {
   name: "AddWidgetForm",
+  mixins: [toastMixin],
   components: { WidgetBooleanInputOutput, WidgetIndicator },
   data() {
     return {
-      values: values,
-      widgets: values.widgets, // todo: make this dynamic.
-      widgetSelected: values.widgets[0], // default
-      widgetsArray: [],
       colSizes: values.colSizes,
+      widgets: values.widgets,
+      widgetSelected: values.widgets[0], // default
+      icons: values.icons,
+      iconSelected: values.icons[0], // default
+      widgetsArray: [],
+      deviceSelected: "", // default
       colSizesSelected: values.colSizes[5].name, // default
-      configBooleanInputOutput: {
-        userID: "user123",
-        deviceID: "device123",
-        templateID: "booleaninputoutput-123",
-        dashboardID: "dash123",
-        widget: "booleaninputoutput",
-        uniqueStr: "123",
-        payload: true,
-        title: "",
-        text: "",
-        icon: "",
-        timeInterval: "",
-        columnSize: "col-6",
-      },
-      configIndicator: {
-        userID: "user123",
-        deviceID: "device123",
-        templateID: "indicator-123",
-        dashboardID: "dash123",
-        widget: "indicator",
-        uniqueStr: "123",
-        title: "",
-        text: "",
-        icon: "",
+      widget: {
+        type: "",
+        name: "",
+        description: "",
+        icon: "fa-home",
         unit: "",
-        timeInterval: "",
-        columnSize: "col-6",
+        timeInterval: 1,
+        size: "col-6",
+        device: "",
+      },
+      widgetDefault: {
+        type: "",
+        name: "",
+        description: "",
+        icon: "fa-home",
+        unit: "",
+        timeInterval: 1,
+        size: "col-6",
+        device: "",
+      },
+      dashboard: {
+        name: "",
+        description: "",
+        widgets: [],
       },
     };
   },
+  created: function () {
+    this.getAllUserDevices();
+  },
+  computed: {
+    devicesList: function () {
+      return this.$store.getters["device/getDevices"];
+    },
+    hasDevices: function () {
+      return this.$store.getters["device/getDevices"] !== null;
+    },
+  },
   methods: {
+    iconDisplay: function (value) {
+      return `icon-size fa ${value}`;
+    },
+    getAllUserDevices: async function () {
+      await this.$store.dispatch("device/getAllUserDevices");
+    },
+    updateDeviceSelected: function (name, device) {
+      this.deviceSelected = name;
+      this.widget.deviceID = device._id;
+    },
+    updateIconSelected: function (value) {
+      this.iconSelected = value;
+      this.widget.icon = value;
+    },
     updateWidgetSelected: function (value) {
       this.widgetSelected = value;
+      this.widget = this.widgetDefault; // "clean".
+      this.widget.type = value;
     },
     updateSize: function (value) {
       this.colSizesSelected = value.name;
-      this.configBooleanInputOutput.columnSize = value.value;
-      this.configIndicator.columnSize = value.value;
+      this.widget.size = value.value;
     },
-    addWidget: function () {
-      // todo: avoid adding widget with same id, avoid empty fields.
-      // todo: call api.
-      let clone = null;
-      switch (this.widgetSelected) {
-        case "Indicator":
-          clone = JSON.parse(JSON.stringify(this.configIndicator));
-          break;
-        case "Boolean Input/Output":
-          clone = JSON.parse(JSON.stringify(this.configBooleanInputOutput));
-          break;
-        default:
-          break;
-      }
+    addWidgetToPreview: function () {
+      let clone = JSON.parse(JSON.stringify(this.widget));
       this.widgetsArray.push(clone);
     },
     clearConfig(configObj) {
@@ -286,6 +309,22 @@ export default {
     },
     removeWidget(index) {
       this.widgetsArray.splice(index, 1);
+      // call api.
+    },
+    saveDashboard: async function () {
+      if (
+        this.dashboard.name === "" ||
+        this.dashboard.description === "" ||
+        this.widgetsArray.length === 0
+      ) {
+        this.toast("Missing fields.", "error");
+        return;
+      }
+      await this.$store.dispatch("dashboard/createDashboard", {
+        name: this.dashboard.name,
+        description: this.dashboard.description,
+        widgets: this.widgetsArray,
+      });
     },
   },
 };
@@ -297,5 +336,8 @@ export default {
 }
 .space-select {
   margin-bottom: 18px;
+}
+.icon-size {
+  font-size: 20px;
 }
 </style>

@@ -13,7 +13,7 @@
             </div>
           </div>
         </template>
-        <div class="row">
+        <div class="column">
           <div class="col-md-6">
             <base-input
               label="Device name"
@@ -22,17 +22,6 @@
               v-model="deviceInfo.name"
             />
           </div>
-          <div class="col-md-6">
-            <base-input
-              label="Device ID"
-              placeholder="Device ID"
-              input-classes="form-control-alternative"
-              v-model="deviceInfo.id"
-            />
-          </div>
-        </div>
-
-        <div class="row">
           <div class="col-md-6">
             <base-input label="Description">
               <textarea
@@ -43,29 +32,18 @@
               ></textarea>
             </base-input>
           </div>
-          <div class="col-md-6">
-            <label class="form-control-label">Add to dashboard</label><br />
-            <base-dropdown>
-              <template v-slot:title>
-                <base-button type="secondary" class="dropdown-toggle">
-                  {{ templateSelected }}
-                </base-button>
-              </template>
-              <a
-                v-for="t in templates"
-                :key="t"
-                class="dropdown-item"
-                :value="t"
-                @click="updateTemplateSelected(t)"
-                >{{ t }}</a
-              >
-            </base-dropdown>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <base-button type="default" @click="saveDevice">Save</base-button>
+          <br />
+          <div class="row">
+            <div class="col-md-1">
+              <base-button type="default" @click="saveDevice">{{
+                editID ? "Update" : "Save"
+              }}</base-button>
+            </div>
+            <div class="col-md-1">
+              <base-button type="secondary" @click="cleanDeviceInfo">
+                Clean
+              </base-button>
+            </div>
           </div>
         </div>
       </card>
@@ -91,19 +69,19 @@
             :data="devicesList"
           >
             <template v-slot:columns>
+              <th>Device ID</th>
               <th>Name</th>
-              <th>ID</th>
               <th>Description</th>
-              <th>Template</th>
+              <th>Owner</th>
               <th>Actions</th>
               <th></th>
             </template>
 
             <template v-slot:default="row">
-              <td>{{ row.item.name }}</td>
               <td>{{ row.item._id }}</td>
+              <td>{{ row.item.name }}</td>
               <td>{{ row.item.description }}</td>
-              <td>{{ row.item.templateName }}</td>
+              <td>{{ row.item.user.email }}</td>
               <td>
                 <el-tooltip
                   placement="left"
@@ -144,7 +122,6 @@
 </template>
 
 <script>
-import values from "../data/values.json";
 import toastMixin from "../mixin/toastMixin.js";
 
 export default {
@@ -152,16 +129,13 @@ export default {
   mixins: [toastMixin],
   data() {
     return {
-      templates: values.widgets, // todo: make this dynamic.
-      templateSelected: values.widgets[0], // default
       devicesTable: [],
       deviceInfo: {
         name: "",
-        id: "",
         description: "",
-        template: "",
-        isActive: true,
+        templateID: "",
       },
+      editID: "",
     };
   },
   created: function () {
@@ -173,57 +147,48 @@ export default {
     },
   },
   methods: {
-    updateTemplateSelected: function (value) {
-      this.templateSelected = value;
-    },
     getAllUserDevices: async function () {
       await this.$store.dispatch("device/getAllUserDevices");
       this.toast("Devices list updated!", "success");
     },
     saveDevice: async function () {
-      await this.$store.dispatch("device/createDevice", {
-        name: this.deviceInfo.name,
-        templateID: this.deviceInfo.id,
-        templateName: this.deviceInfo.template,
-        description: this.deviceInfo.description,
-      });
-      this.deviceInfo.template = this.templateSelected;
+      if (this.editID) {
+        await this.$store.dispatch("device/updateDevice", {
+          deviceID: this.editID,
+          name: this.deviceInfo.name,
+          description: this.deviceInfo.description,
+        });
+      } else {
+        await this.$store.dispatch("device/createDevice", {
+          name: this.deviceInfo.name,
+          description: this.deviceInfo.description,
+        });
+      }
       this.cleanDeviceInfo();
       this.toast("Device saved!", "success");
       this.getAllUserDevices();
     },
     cleanDeviceInfo: function () {
       this.deviceInfo.name = "";
-      this.deviceInfo.id = "";
       this.deviceInfo.description = "";
-      this.deviceInfo.template = "";
-      this.deviceInfo.isActive = true;
-      this.templateSelected = this.templates[0];
+      this.editID = false;
     },
-    editDevice: function (item) {
-      // todo: change btn from Save to Update, add Cancel btn, lock row on table.
-      // todo: call api.
+    editDevice: async function (item) {
+      this.editID = item._id;
       this.deviceInfo.name = item.name;
-      this.deviceInfo.id = item.id;
       this.deviceInfo.description = item.description;
-      this.deviceInfo.template = item.template;
-      this.templateSelected = item.template;
     },
     deleteDevice: async function (item) {
-      await this.$store.dispatch("device/deleteDevice", item);
+      await this.$store.dispatch("device/deleteDevice", item._id);
       this.getAllUserDevices();
       this.toast("Device deleted!", "success");
     },
-    switchDeviceActive: function (item) {
-      // todo: call api.
-      this.devicesTable = this.devicesTable.map((device) => {
-        if (device.id === item.id) {
-          let isActive = !device.isActive;
-          return { ...device, isActive };
-        } else {
-          return device;
-        }
+    switchDeviceActive: async function (item) {
+      await this.$store.dispatch("device/updateActiveDevice", {
+        deviceID: item._id,
+        isActive: !item.isActive,
       });
+      this.getAllUserDevices();
     },
   },
 };

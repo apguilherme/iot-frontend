@@ -1,6 +1,4 @@
 module.exports = {
-  userToken: null,
-  userInfo: null,
   loginMessages: {
     failure: "",
     success: "",

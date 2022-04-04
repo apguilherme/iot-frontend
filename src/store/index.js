@@ -9,5 +9,6 @@ export default new Vuex.Store({
   modules: {
     user: require("./user/module.js"),
     device: require("./device/module.js"),
+    dashboard: require("./dashboard/module.js"),
   },
 });

@@ -4,7 +4,6 @@ import DashboardLayout from "@/layout/DashboardLayout";
 import AuthLayout from "@/layout/AuthLayout";
 
 import Dashboard from "../views/Dashboard.vue";
-import Icons from "../views/Icons.vue";
 import Maps from "../views/Maps.vue";
 import Profile from "../views/UserProfile.vue";
 import Tables from "../views/Tables.vue";
@@ -27,11 +26,6 @@ const routes = [
         path: "/dashboard",
         name: "dashboard",
         components: { default: Dashboard },
-      },
-      {
-        path: "/icons",
-        name: "icons",
-        components: { default: Icons },
       },
       {
         path: "/maps",

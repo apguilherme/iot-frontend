@@ -1,10 +1,10 @@
 <template>
-  <div class="card" :class="[config.columnSize]">
+  <div class="card" :class="[config.size]">
     <div class="box">
-      <h2>{{ config.title }}</h2>
+      <h2>{{ config.name }}</h2>
       <i class="icon-size fa" :class="[config.icon]"></i>
     </div>
-    <p>{{ config.text }} {{ config.unit }}</p>
+    <p>{{ config.description }} {{ config.unit }}</p>
   </div>
 </template>
 

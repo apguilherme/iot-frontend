@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="[config.columnSize]">
+  <div class="card" :class="[config.size]">
     <div class="box">
       <h2>{{ config.title }}</h2>
       <i
@@ -8,7 +8,7 @@
         @click="sendToTopic"
       ></i>
     </div>
-    <p>{{ config.text }}</p>
+    <p>{{ config.description }}</p>
   </div>
 </template>
 
