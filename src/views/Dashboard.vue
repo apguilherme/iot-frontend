@@ -202,7 +202,6 @@ export default {
   methods: {
     getAllUserDashboards: async function () {
       await this.$store.dispatch("dashboard/getAllUserDashboards");
-      this.toast("Dashboards list updated!", "success");
     },
     initBigChart(index) {
       chart.destroy();
