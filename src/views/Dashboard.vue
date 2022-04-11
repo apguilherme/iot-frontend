@@ -1,5 +1,16 @@
 <template>
   <div>
+    <!-- USER DASHBOARD -->
+    <!-- todo: add dash selection -->
+    <div v-if="userDashboards">
+      <hr />
+      <dashboard-generator
+        :dashboard="userDashboards[0]"
+        :widgets="userDashboards[0].widgets"
+        :isEdit="false"
+      ></dashboard-generator>
+    </div>
+    <hr />
     <div class="row" style="margin: 20px">
       <!--Cards-->
       <div class="col-xl-3 col-lg-6">
@@ -159,10 +170,13 @@ import PageVisitsTable from "./Dashboard/PageVisitsTable";
 import SocialTrafficTable from "./Dashboard/SocialTrafficTable";
 let chart;
 
+import DashboardGenerator from "../views/DashboardGenerator.vue";
+
 export default {
   components: {
     PageVisitsTable,
     SocialTrafficTable,
+    DashboardGenerator,
   },
   data() {
     return {
@@ -177,7 +191,19 @@ export default {
       },
     };
   },
+  created: function () {
+    this.getAllUserDashboards();
+  },
+  computed: {
+    userDashboards() {
+      return this.$store.getters["dashboard/getDashboards"];
+    },
+  },
   methods: {
+    getAllUserDashboards: async function () {
+      await this.$store.dispatch("dashboard/getAllUserDashboards");
+      this.toast("Dashboards list updated!", "success");
+    },
     initBigChart(index) {
       chart.destroy();
       chart = new Chart(

@@ -56,14 +56,7 @@
             path: '/profile',
           }"
         />
-        <sidebar-item
-          :link="{
-            name: 'Icons',
-            icon: 'ni ni-planet text-blue',
-            path: '/icons',
-          }"
-        />
-        <sidebar-item
+        <!-- <sidebar-item
           :link="{
             name: 'Login',
             icon: 'ni ni-key-25 text-info',
@@ -76,12 +69,19 @@
             icon: 'ni ni-circle-08 text-pink',
             path: '/register',
           }"
+        /> -->
+        <sidebar-item
+          @click="logout"
+          :link="{
+            name: 'Logout',
+            icon: 'ni ni-user-run',
+            path: '/login',
+          }"
         />
       </template>
     </side-bar>
     <div class="main-content" :data="sidebarBackground">
       <dashboard-navbar></dashboard-navbar>
-
       <div @click="toggleSidebar">
         <!-- your content here -->
         <router-view></router-view>
@@ -109,6 +109,9 @@ export default {
       if (this.$sidebar.showSidebar) {
         this.$sidebar.displaySidebar(false);
       }
+    },
+    logout: async function () {
+      await this.$store.dispatch("user/logout");
     },
   },
 };

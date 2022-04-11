@@ -69,7 +69,6 @@
       </div>
     </div>
 
-    <!-- DASHBOARDS FORM -->
     <div v-if="!hasDevices">
       <h3>Please, create some devices before adding widgets to a Dashboard.</h3>
     </div>
@@ -229,9 +228,10 @@
       </card>
     </div>
 
-    <!-- DASHBOARD PREVIEW -->
+    <!-- DASHBOARD -->
     <div class="container" v-if="hasDevices && widgetsArray.length !== 0">
       <hr />
+      <!-- FORM -->
       <div class="row">
         <div class="col-md-4">
           <base-input
@@ -254,9 +254,11 @@
         Save dashboard
       </base-button>
       <hr />
+      <!-- PREVIEW -->
       <dashboard-generator
         :dashboard="dashboard"
         :widgets="widgetsArray"
+        :isEdit="true"
       ></dashboard-generator>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="box">
-      <h2>{{ widget.title }}</h2>
+      <h2>{{ widget.name }}</h2>
       <i
         class="icon-size fa"
         :class="[widget.icon, getStateColor]"

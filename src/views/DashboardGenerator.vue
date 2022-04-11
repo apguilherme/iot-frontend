@@ -9,12 +9,16 @@
           :key="index"
           :class="widget.size"
         >
+          <!-- TRASH ICON -->
           <i
             aria-hidden="true"
             class="fa fa-trash text-warning pull-right"
             @click="removeWidgetFromPreview(index)"
             style="margin-bottom: 10px"
+            v-if="isEdit"
           ></i>
+
+          <!-- WIDGETS -->
 
           <widget-boolean-input-output
             v-if="widget.type == 'Boolean Input/Output'"
@@ -29,7 +33,8 @@
       </div>
     </div>
 
-    <div class="add-margin">
+    <!-- JSON ARRAY -->
+    <div class="add-margin" v-if="isEdit">
       <pre>{{ widgetsArray }}</pre>
     </div>
   </div>
@@ -39,7 +44,7 @@
 import WidgetBooleanInputOutput from "./WidgetBooleanInputOutput.vue";
 import WidgetIndicator from "./WidgetIndicator.vue";
 export default {
-  props: ["dashboard", "widgets"],
+  props: ["dashboard", "widgets", "isEdit"],
   name: "DashboardGenerator",
   components: { WidgetBooleanInputOutput, WidgetIndicator },
   data() {
