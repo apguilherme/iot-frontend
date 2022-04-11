@@ -67,7 +67,7 @@
               <span>Support</span>
             </router-link>
             <div class="dropdown-divider"></div>
-            <a href="#!" class="dropdown-item">
+            <a href="#!" class="dropdown-item" @click="logout">
               <i class="ni ni-user-run"></i>
               <span>Logout</span>
             </a>
@@ -138,6 +138,9 @@ export default {
     },
     showSidebar() {
       this.$sidebar.displaySidebar(true);
+    },
+    logout: async function () {
+      await this.$store.dispatch("user/logout");
     },
   },
   beforeUnmount() {

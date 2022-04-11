@@ -12,6 +12,7 @@ module.exports = {
         context.commit("setUserToken", res.data.token);
         context.commit("setUserInfo", res.data.userInfo);
         context.commit("setLoginMessages", { success: res.data.message, failure: "", });
+        window.location.href = "/";
       })
       .catch((error) => {
         localStorage.setItem("iottoken", null);
@@ -36,5 +37,6 @@ module.exports = {
   },
   logout: function () {
     localStorage.setItem("iottoken", null);
+    window.location.href = "/";
   }
 };
