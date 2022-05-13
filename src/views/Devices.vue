@@ -23,6 +23,7 @@
               <th>Name</th>
               <th>Description</th>
               <th>Owner</th>
+              <th>Save data</th>
               <th>Actions</th>
               <th></th>
             </template>
@@ -35,19 +36,21 @@
               <td>
                 <el-tooltip
                   placement="left"
-                  :content="row.item.isActive ? 'Turn off' : 'Turn on'"
+                  :content="row.item.saverRule.status ? 'Turn off' : 'Turn on'"
                 >
                   <base-button
                     :key="row.item.id"
                     size="sm"
                     outline
-                    :type="row.item.isActive ? 'success' : 'danger'"
-                    :value="row.item.isActive"
-                    @click="switchDeviceActive(row.item)"
+                    :type="row.item.saverRule.status ? 'success' : 'danger'"
+                    :value="row.item.saverRule.status"
+                    @click="switchSaverRule(row.item)"
                   >
-                    {{ row.item.isActive ? "On" : "Off" }}
+                    {{ row.item.saverRule.status ? "On" : "Off" }}
                   </base-button>
                 </el-tooltip>
+              </td>
+              <td>
                 <base-button
                   size="sm"
                   type="primary"
@@ -121,10 +124,11 @@
 
 <script>
 import toastMixin from "../mixin/toastMixin.js";
+import delay from "../mixin/delay.js";
 
 export default {
   name: "Devices",
-  mixins: [toastMixin],
+  mixins: [toastMixin, delay],
   data() {
     return {
       devicesTable: [],
@@ -181,11 +185,14 @@ export default {
       this.getAllUserDevices();
       this.toast("Device deleted!", "success");
     },
-    switchDeviceActive: async function (item) {
-      await this.$store.dispatch("device/updateActiveDevice", {
+    switchSaverRule: async function (item) {
+      let saverRule = JSON.parse(JSON.stringify(item.saverRule));
+      saverRule.status = !saverRule.status;
+      await this.$store.dispatch("device/updateSaverRule", {
         deviceID: item._id,
-        isActive: !item.isActive,
+        saverRule: saverRule,
       });
+      await this.delay(3000);
       this.getAllUserDevices();
     },
   },

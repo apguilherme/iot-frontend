@@ -45,9 +45,9 @@ module.exports = {
         console.log(error)
       });
   },
-  updateActiveDevice: async function (context, data) {
-    HTTP.put(`/api/devices/update/${data.deviceID}`, {
-      "isActive": data.isActive,
+  updateSaverRule: async function (context, data) {
+    HTTP.put(`/api/devices/updateSaverRule/${data.deviceID}`, {
+      "saverRule": data.saverRule,
     })
       .then((res) => {
         console.log(res);

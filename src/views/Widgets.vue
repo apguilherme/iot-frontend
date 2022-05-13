@@ -393,7 +393,7 @@ export default {
     deleteDashboard: async function (item) {
       await this.$store.dispatch("dashboard/deleteDashboard", item._id);
       this.getAllUserDashboards();
-      this.toast("Device deleted!", "success");
+      this.toast("Dashboard deleted!", "success");
     },
     editDashboard: function () {
       alert("edit");
