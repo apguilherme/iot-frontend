@@ -12,8 +12,10 @@ module.exports = {
         context.commit("setDevices", null);
       });
   },
-  deleteDevice: async function (context, deviceID) {
-    HTTP.delete(`/api/devices/delete/${deviceID}`)
+  deleteDevice: async function (context, data) {
+    HTTP.delete(`/api/devices/delete/${data.deviceId}/${data.emqxRuleId}`, {
+      "saverRule": data.saverRule
+    })
       .then((res) => {
         console.log(res);
       })

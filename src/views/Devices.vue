@@ -167,6 +167,7 @@ export default {
         });
       }
       this.cleanDeviceInfo();
+      await this.delay(3000);
       this.toast("Device saved!", "success");
       this.getAllUserDevices();
     },
@@ -181,7 +182,11 @@ export default {
       this.deviceInfo.description = item.description;
     },
     deleteDevice: async function (item) {
-      await this.$store.dispatch("device/deleteDevice", item._id);
+      await this.$store.dispatch("device/deleteDevice", {
+        deviceId: item._id,
+        emqxRuleId: item.saverRule.emqxRuleId,
+      });
+      await this.delay(3000);
       this.getAllUserDevices();
       this.toast("Device deleted!", "success");
     },
