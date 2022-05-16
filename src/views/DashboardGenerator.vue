@@ -34,9 +34,9 @@
     </div>
 
     <!-- JSON ARRAY -->
-    <div class="add-margin" v-if="isEdit">
+    <!-- <div class="add-margin" v-if="isEdit">
       <pre>{{ widgetsArray }}</pre>
-    </div>
+    </div> -->
   </div>
 </template>
 

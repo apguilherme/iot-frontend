@@ -7,7 +7,9 @@
       expand
     >
       <span class="mr-3 d-none d-md-flex ml-lg-auto"></span>
-      <span class="mb-0 text-sm font-weight-bold">{{ userEmail }}</span>
+      <span class="mb-0 text-sm font-weight-bold">
+        {{ userIdentification }}
+      </span>
     </base-nav>
   </base-header>
 </template>
@@ -20,8 +22,12 @@ export default {
     };
   },
   computed: {
-    userEmail: function () {
-      return this.$store.getters["user/getUserInfo"].email;
+    userIdentification: function () {
+      return (
+        this.$store.getters["user/getUserInfo"].email +
+        " ID: " +
+        this.$store.getters["user/getUserInfo"].id
+      );
     },
   },
   methods: {

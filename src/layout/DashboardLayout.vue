@@ -29,26 +29,11 @@
         />
         <sidebar-item
           :link="{
-            name: 'Tables',
-            icon: 'ni ni-bullet-list-67 text-black',
-            path: '/tables',
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Maps',
-            icon: 'ni ni-pin-3 text-red',
-            path: '/maps',
-          }"
-        />
-        <sidebar-item
-          :link="{
             name: 'Alerts',
             icon: 'ni ni-time-alarm text-info',
             path: '/alerts',
           }"
         />
-
         <sidebar-item
           :link="{
             name: 'User Profile',
@@ -56,20 +41,6 @@
             path: '/profile',
           }"
         />
-        <!-- <sidebar-item
-          :link="{
-            name: 'Login',
-            icon: 'ni ni-key-25 text-info',
-            path: '/login',
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Register',
-            icon: 'ni ni-circle-08 text-pink',
-            path: '/register',
-          }"
-        /> -->
         <sidebar-item
           @click="logout"
           :link="{

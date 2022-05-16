@@ -14,7 +14,9 @@
 
       <slot name="mobile-right">
         <ul class="nav align-items-center d-md-none">
-          {{ userEmail }}
+          {{
+            userIdentification
+          }}
         </ul>
       </slot>
       <slot></slot>
@@ -76,8 +78,12 @@ export default {
     };
   },
   computed: {
-    userEmail: function () {
-      return this.$store.getters["user/getUserInfo"].email;
+    userIdentification: function () {
+      return (
+        this.$store.getters["user/getUserInfo"].email +
+        " ID: " +
+        this.$store.getters["user/getUserInfo"].id
+      );
     },
   },
   methods: {

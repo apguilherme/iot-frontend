@@ -1,5 +1,61 @@
 <template>
   <div>
+    <!-- DEVICE FORM -->
+    <div class="add-margin">
+      <card shadow type="secondary">
+        <template v-slot:header>
+          <div class="bg-white border-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Add new device</h3>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div class="column">
+          <div class="col-md-6">
+            <base-input
+              label="Name"
+              placeholder="Device name"
+              input-classes="form-control-alternative"
+              v-model="deviceInfo.name"
+            />
+          </div>
+          <div class="col-md-6">
+            <base-input label="Description">
+              <textarea
+                rows="4"
+                class="form-control form-control-alternative"
+                placeholder="Device description"
+                v-model="deviceInfo.description"
+              ></textarea>
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              label="Variables"
+              placeholder="Separate using comma, example: temp, light, status"
+              input-classes="form-control-alternative"
+              v-model="deviceInfo.variables"
+            />
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-1">
+              <base-button type="default" @click="saveDevice">{{
+                editId ? "Update" : "Save"
+              }}</base-button>
+            </div>
+            <div class="col-md-1">
+              <base-button type="secondary" @click="cleanDeviceInfo">
+                Clean
+              </base-button>
+            </div>
+          </div>
+        </div>
+      </card>
+    </div>
+
     <!-- TABLE -->
     <div class="add-margin">
       <div class="card shadow">
@@ -22,7 +78,7 @@
               <th>ID</th>
               <th>Name</th>
               <th>Description</th>
-              <th>Owner</th>
+              <th>Variables</th>
               <th>Save data</th>
               <th>Actions</th>
               <th></th>
@@ -32,7 +88,7 @@
               <td>{{ row.item._id }}</td>
               <td>{{ row.item.name }}</td>
               <td>{{ row.item.description }}</td>
-              <td>{{ row.item.user.email }}</td>
+              <td>{{ row.item.variables }}</td>
               <td>
                 <el-tooltip
                   placement="left"
@@ -71,54 +127,6 @@
         </div>
       </div>
     </div>
-
-    <!-- DEVICE FORM -->
-    <div class="add-margin">
-      <card shadow type="secondary">
-        <template v-slot:header>
-          <div class="bg-white border-0">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h3 class="mb-0">Add new device</h3>
-              </div>
-            </div>
-          </div>
-        </template>
-        <div class="column">
-          <div class="col-md-6">
-            <base-input
-              label="Device name"
-              placeholder="Device name"
-              input-classes="form-control-alternative"
-              v-model="deviceInfo.name"
-            />
-          </div>
-          <div class="col-md-6">
-            <base-input label="Description">
-              <textarea
-                rows="4"
-                class="form-control form-control-alternative"
-                placeholder="Description"
-                v-model="deviceInfo.description"
-              ></textarea>
-            </base-input>
-          </div>
-          <br />
-          <div class="row">
-            <div class="col-md-1">
-              <base-button type="default" @click="saveDevice">{{
-                editID ? "Update" : "Save"
-              }}</base-button>
-            </div>
-            <div class="col-md-1">
-              <base-button type="secondary" @click="cleanDeviceInfo">
-                Clean
-              </base-button>
-            </div>
-          </div>
-        </div>
-      </card>
-    </div>
   </div>
 </template>
 
@@ -131,13 +139,13 @@ export default {
   mixins: [toastMixin, delay],
   data() {
     return {
-      devicesTable: [],
-      deviceInfo: {
+      deviceInfo: { 
+        // new device
         name: "",
         description: "",
-        templateID: "",
+        variables: [],
       },
-      editID: "",
+      editId: "",
     };
   },
   created: function () {
@@ -154,16 +162,36 @@ export default {
       this.toast("Devices list updated!", "success");
     },
     saveDevice: async function () {
-      if (this.editID) {
+      if (
+        this.deviceInfo.name === "" ||
+        this.deviceInfo.description === "" ||
+        this.deviceInfo.variables.length === 0
+      ) {
+        this.toast("Missing fields!", "error");
+        return;
+      }
+      if (this.editId) {
+        let vars = [
+          ...new Set(
+            this.deviceInfo.variables.split(",").map((item) => item.trim())
+          ),
+        ];
         await this.$store.dispatch("device/updateDevice", {
-          deviceID: this.editID,
-          name: this.deviceInfo.name,
-          description: this.deviceInfo.description,
+          deviceID: this.editId.trim(),
+          name: this.deviceInfo.name.trim(),
+          description: this.deviceInfo.description.trim(),
+          variables: vars,
         });
       } else {
+        let vars = [
+          ...new Set(
+            this.deviceInfo.variables.split(",").map((item) => item.trim())
+          ),
+        ];
         await this.$store.dispatch("device/createDevice", {
-          name: this.deviceInfo.name,
-          description: this.deviceInfo.description,
+          name: this.deviceInfo.name.trim(),
+          description: this.deviceInfo.description.trim(),
+          variables: vars,
         });
       }
       this.cleanDeviceInfo();
@@ -174,12 +202,14 @@ export default {
     cleanDeviceInfo: function () {
       this.deviceInfo.name = "";
       this.deviceInfo.description = "";
-      this.editID = false;
+      this.deviceInfo.variables = [];
+      this.editId = false;
     },
     editDevice: async function (item) {
-      this.editID = item._id;
+      this.editId = item._id;
       this.deviceInfo.name = item.name;
       this.deviceInfo.description = item.description;
+      this.deviceInfo.variables = item.variables;
     },
     deleteDevice: async function (item) {
       await this.$store.dispatch("device/deleteDevice", {
@@ -199,6 +229,9 @@ export default {
       });
       await this.delay(3000);
       this.getAllUserDevices();
+    },
+    replaceVarsStr(item) {
+      return item.variables.replace('"', "").replace("[", "").replace("]", "");
     },
   },
 };
