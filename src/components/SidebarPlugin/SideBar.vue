@@ -77,6 +77,9 @@ export default {
       autoClose: this.autoClose,
     };
   },
+  created: function () {
+    this.$store.dispatch("user/getUserNotifications");
+  },
   computed: {
     userIdentification: function () {
       return (

@@ -11,4 +11,7 @@ module.exports = {
   setRegisterMessages: function (context, data) {
     context.registerMessages = data;
   },
+  setNotifications: function (context, data) {
+    context.notifications = data;
+  },
 };

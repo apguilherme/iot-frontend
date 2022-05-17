@@ -6,6 +6,7 @@ import AuthLayout from "@/layout/AuthLayout";
 import Dashboard from "../views/Dashboard.vue";
 import Profile from "../views/UserProfile.vue";
 import Alerts from "../views/Alerts.vue";
+import Notifications from "../views/Notifications.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 //import SamplePage from "../views/SamplePage.vue";
 
@@ -45,6 +46,11 @@ const routes = [
         path: "/widgets",
         name: "widgets",
         components: { default: Widgets },
+      },
+      {
+        path: "/notifications",
+        name: "notifications",
+        components: { default: Notifications },
       },
       { path: "/:pathMatch(.*)*", component: PageNotFound },
     ],

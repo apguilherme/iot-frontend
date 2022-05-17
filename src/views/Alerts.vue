@@ -154,6 +154,7 @@
               <th>Variable</th>
               <th>Condition</th>
               <th>Value</th>
+              <th>Time interval (mins)</th>
               <th>Status</th>
               <th>Actions</th>
               <th></th>
@@ -166,6 +167,7 @@
               <td>{{ row.item.variable }}</td>
               <td>{{ row.item.condition }}</td>
               <td>{{ row.item.value }}</td>
+              <td>{{ row.item.triggerTimeInterval }}</td>
               <td>
                 <el-tooltip
                   placement="left"

@@ -38,5 +38,15 @@ module.exports = {
   logout: function () {
     localStorage.setItem("iottoken", null);
     window.location.href = "/";
-  }
+  },
+  getUserNotifications: async function (context) {
+    HTTP.get("/api/alerts/notifications")
+      .then((res) => {
+        context.commit("setNotifications", res.data.userNotifications);
+      })
+      .catch((error) => {
+        context.commit("setNotifications", []);
+        console.log("Error retrieving notifications:", error);
+      });
+  },
 };

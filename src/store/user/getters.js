@@ -16,4 +16,7 @@ module.exports = {
   getRegisterMessages: function (context) {
     return context.registerMessages;
   },
+  getNotifications: function (context) {
+    return context.notifications;
+  },
 };

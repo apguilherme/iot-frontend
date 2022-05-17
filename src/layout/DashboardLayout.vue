@@ -36,6 +36,13 @@
         />
         <sidebar-item
           :link="{
+            name: 'Notifications',
+            icon: 'ni ni-bell-55',
+            path: '/notifications',
+          }"
+        />
+        <sidebar-item
+          :link="{
             name: 'User Profile',
             icon: 'ni ni-single-02 text-orange',
             path: '/profile',
