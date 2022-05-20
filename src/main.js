@@ -25,10 +25,14 @@ import store from "./store/index.js";
 
 // toast
 import Toaster from "@meforma/vue-toaster";
+// event bus for pub/sub to broker
+import mitt from "mitt";
+const emitter = mitt();
 
 const appInstance = createApp(App);
 appInstance.use(store);
 appInstance.use(router);
 appInstance.use(ArgonDashboard);
 appInstance.use(Toaster);
+appInstance.config.globalProperties.emitter = emitter;
 appInstance.mount("#app");

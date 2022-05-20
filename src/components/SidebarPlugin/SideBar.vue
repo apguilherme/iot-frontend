@@ -8,9 +8,6 @@
       <navbar-toggle-button @click="showSidebar">
         <span class="navbar-toggler-icon"></span>
       </navbar-toggle-button>
-      <router-link class="navbar-brand" to="/">
-        <img :src="logo" class="navbar-brand-img" alt="..." />
-      </router-link>
 
       <slot name="mobile-right">
         <ul class="nav align-items-center d-md-none">
@@ -27,11 +24,6 @@
       >
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
-            <div class="col-6 collapse-brand">
-              <router-link to="/">
-                <img :src="logo" />
-              </router-link>
-            </div>
             <div class="col-6 collapse-close">
               <navbar-toggle-button
                 @click="closeSidebar"
@@ -53,18 +45,15 @@
 </template>
 <script>
 import NavbarToggleButton from "@/components/NavbarToggleButton";
+import mqttClient from "../../mixin/mqttClient.js";
 
 export default {
   name: "sidebar",
+  mixins: [mqttClient],
   components: {
     NavbarToggleButton,
   },
   props: {
-    logo: {
-      type: String,
-      default: "img/brand/green.png",
-      description: "Sidebar app logo",
-    },
     autoClose: {
       type: Boolean,
       default: true,
@@ -76,9 +65,6 @@ export default {
     return {
       autoClose: this.autoClose,
     };
-  },
-  created: function () {
-    this.$store.dispatch("user/getUserNotifications");
   },
   computed: {
     userIdentification: function () {
@@ -101,6 +87,9 @@ export default {
     if (this.$sidebar.showSidebar) {
       this.$sidebar.showSidebar = false;
     }
+  },
+  mounted() {
+    this.beginMqtt();
   },
 };
 </script>

@@ -109,7 +109,7 @@
           <div class="col-md-6">
             <base-input
               label="Trigger interval"
-              placeholder="Interval between alarms for the same variable (seconds)"
+              placeholder="Interval between alarms for the same variable (minutes)"
               input-classes="form-control-alternative"
               v-model="alertInfo.triggerTimeInterval"
             />
@@ -203,12 +203,12 @@
 </template>
 
 <script>
-import toastMixin from "../mixin/toastMixin.js";
 import delay from "../mixin/delay.js";
+import toastMixin from "../mixin/toastMixin.js";
 
 export default {
   name: "Alerts",
-  mixins: [toastMixin, delay],
+  mixins: [delay, toastMixin],
   data() {
     return {
       alertInfo: {
@@ -272,7 +272,6 @@ export default {
       });
       this.cleanAlertInfo();
       await this.delay(3000);
-      this.toast("Alert saved!", "success");
       this.getAllUserDevices();
     },
     cleanAlertInfo: function () {
@@ -294,7 +293,6 @@ export default {
       });
       await this.delay(3000);
       this.getAllUserDevices();
-      this.toast("Alert deleted!", "success");
     },
     switchAlertRule: async function (item) {
       let alertRule = JSON.parse(JSON.stringify(item));

@@ -19,7 +19,7 @@
         >
           <template v-slot:columns>
             <th>Date</th>
-            <th>Device ID</th>
+            <th>Device</th>
             <th>Variable</th>
             <th>Value received</th>
             <th>Condition</th>
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     getDeviceNameById: function (id) {
-      return this.devicesList.find((device) => device._id === id).name;
+      return this.devicesList?.find((device) => device._id === id).name;
     },
   },
 };

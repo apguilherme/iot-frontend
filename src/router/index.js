@@ -81,12 +81,15 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to) => { // middleware to check if user is authenticated.
+router.beforeEach(async (to) => {
+  // middleware to check if user is authenticated.
   let tkn = localStorage.getItem("iottoken");
   let hasTkn = tkn && tkn !== "null" ? tkn : false;
-  if (!hasTkn && to.name !== "login" && to.name !== "register") { // avoid navigation without token.
+  if (!hasTkn && to.name !== "login" && to.name !== "register") {
+    // avoid navigation without token.
     return { name: "login" };
-  } else if (hasTkn && to.name === "login") { // already logged.
+  } else if (hasTkn && to.name === "login") {
+    // already logged.
     return { name: "dashboard" };
   }
 });

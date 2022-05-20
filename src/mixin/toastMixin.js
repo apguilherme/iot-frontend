@@ -1,10 +1,10 @@
 const toastMixin = {
   methods: {
-    toast(message, type, position = "top-right") {
+    toast(message, type, duration = 4000, position = "top-right") {
       this.$toast.show(message, {
         type: type, // success, info, warning, error, default
         position: position, // top, bottom, top-right, bottom-right,top-left, bottom-left
-        duration: 4000,
+        duration: duration,
         dismissible: false,
         pauseOnHover: true,
       });

@@ -131,15 +131,15 @@
 </template>
 
 <script>
-import toastMixin from "../mixin/toastMixin.js";
 import delay from "../mixin/delay.js";
+import toastMixin from "../mixin/toastMixin.js";
 
 export default {
   name: "Devices",
-  mixins: [toastMixin, delay],
+  mixins: [delay, toastMixin],
   data() {
     return {
-      deviceInfo: { 
+      deviceInfo: {
         // new device
         name: "",
         description: "",
@@ -159,7 +159,6 @@ export default {
   methods: {
     getAllUserDevices: async function () {
       await this.$store.dispatch("device/getAllUserDevices");
-      this.toast("Devices list updated!", "success");
     },
     saveDevice: async function () {
       if (
@@ -196,7 +195,6 @@ export default {
       }
       this.cleanDeviceInfo();
       await this.delay(3000);
-      this.toast("Device saved!", "success");
       this.getAllUserDevices();
     },
     cleanDeviceInfo: function () {
@@ -218,7 +216,6 @@ export default {
       });
       await this.delay(3000);
       this.getAllUserDevices();
-      this.toast("Device deleted!", "success");
     },
     switchSaverRule: async function (item) {
       let saverRule = JSON.parse(JSON.stringify(item.saverRule));

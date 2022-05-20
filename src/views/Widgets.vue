@@ -290,12 +290,12 @@ import WidgetBooleanInputOutput from "./WidgetBooleanInputOutput.vue";
 import WidgetIndicator from "./WidgetIndicator.vue";
 import DashboardGenerator from "./DashboardGenerator.vue";
 import values from "../data/values.json";
-import toastMixin from "../mixin/toastMixin.js";
 import delay from "../mixin/delay.js";
+import toastMixin from "../mixin/toastMixin.js";
 
 export default {
   name: "Widgets",
-  mixins: [toastMixin, delay],
+  mixins: [delay, toastMixin],
   components: { WidgetBooleanInputOutput, WidgetIndicator, DashboardGenerator },
   data() {
     return {
@@ -361,7 +361,6 @@ export default {
     },
     getAllUserDashboards: async function () {
       await this.$store.dispatch("dashboard/getAllUserDashboards");
-      this.toast("Dashboards list updated!", "success");
     },
     updateDeviceSelected: function (name, device) {
       this.deviceSelected = name;
@@ -432,7 +431,6 @@ export default {
     deleteDashboard: async function (item) {
       await this.$store.dispatch("dashboard/deleteDashboard", item._id);
       this.getAllUserDashboards();
-      this.toast("Dashboard deleted!", "success");
     },
     editDashboard: function () {
       alert("edit");

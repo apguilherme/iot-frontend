@@ -5,10 +5,11 @@
       <i
         class="icon-size fa"
         :class="[widget.icon, getStateColor]"
-        @click="sendToTopic(widget)"
+        @click="sendToTopic()"
       ></i>
     </div>
     <p>{{ widget.description }}</p>
+    <p>{{ widget.variableFromDevice }}</p>
   </div>
 </template>
 
@@ -18,32 +19,35 @@ export default {
   name: "WidgetBooleanInputOutput",
   data() {
     return {
-      payload: null,
+      widgetObj: { value: false },
     };
   },
   mounted() {
-    // userid/deviceid/uniquestr
-    this.payload = this.$props.widget.payload;
+    this.widgetObj = JSON.parse(JSON.stringify(this.$props.widget));
+    // set component to watch for the topic userid/deviceid/variable/sdata and call method to process data
+    let topic = `${this.$store.getters["user/getUserInfo"].id}/${this.widgetObj.device._id}/${this.widgetObj.variableFromDevice}/sdata`;
+    this.emitter.on(topic, this.processData);
   },
   methods: {
-    sendToTopic: function (widget) {
-      // toggle
-      this.payload = !this.$props.widget.payload;
-      this.$props.widget.payload = this.payload;
+    sendToTopic: function () {
+      let value = !this.widgetObj.value; // toggle
+      this.widgetObj.value = value;
       let user = this.$store.getters["user/getUserInfo"];
       const data = {
-        topic: `${user.id}/${widget.device}`,
+        topic: `${user.id}/${this.widgetObj.device._id}/${this.widgetObj.variableFromDevice}/sdata`,
         payload: {
-          value: this.payload,
+          value: this.widgetObj.value,
         },
       };
-      // todo: call api.
-      console.log(data);
+      this.emitter.emit("publish-mqtt", data);
+    },
+    processData: function (data) {
+      this.widgetObj.value = data.value;
     },
   },
   computed: {
     getStateColor: function () {
-      return this.widget.payload ? "on" : "off";
+      return this.widgetObj.value ? "on" : "off";
     },
   },
 };
