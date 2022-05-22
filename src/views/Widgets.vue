@@ -394,7 +394,6 @@ export default {
         this.widget.type === "" ||
         this.widget.name === "" ||
         this.widget.description === "" ||
-        this.widget.icon === "" ||
         this.widget.timeInterval === "" ||
         this.widget.size === "" ||
         this.widget.device === "" ||

@@ -94,7 +94,7 @@ export default {
       description: "Input css classes",
     },
     modelValue: {
-      type: [String, Number],
+      type: [String, Number, Array],
       description: "Input value",
     },
     addonRightIcon: {

@@ -3,7 +3,7 @@
         "Boolean Input/Output",
         "Indicator"
     ],
-    "icons": ["fa-home", "fa-sun"],
+    "icons": ["", "fa-home", "fa-sun"],
     "colSizes": [
         {
             "value": "col-1",

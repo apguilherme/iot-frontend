@@ -2,7 +2,7 @@
   <div>
     <!-- USER DASHBOARD -->
     <!-- todo: add dash selection and use selectedDashboard bellow instead of [0] -->
-    <div v-if="userDashboards">
+    <div v-if="userDashboards && userDashboards[0]">
       <dashboard-generator
         :dashboard="userDashboards[0]"
         :widgets="userDashboards[0].widgets"

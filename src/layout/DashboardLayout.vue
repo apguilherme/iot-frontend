@@ -89,6 +89,7 @@ export default {
       }
     },
     logout: async function () {
+      this.emitter.emit("close-broker-conn");
       await this.$store.dispatch("user/logout");
     },
   },

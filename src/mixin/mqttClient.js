@@ -128,6 +128,12 @@ const mqttClient = {
         this.emitter.on("publish-mqtt", (data) => {
           client.publish(data.topic, JSON.stringify(data.payload));
         });
+        // CLOSE BROKER CONNECTION
+        this.emitter.on("close-broker-conn", () => {
+          client.unsubscribe(topicDevices);
+          client.unsubscribe(topicNotifications);
+          client.end();
+        });
       } catch (error) {
         console.log("MQTT client starting error:", error);
       }

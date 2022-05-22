@@ -35,7 +35,10 @@ module.exports = {
         context.commit("setRegisterMessages", { success: "", failure: "failure: " + error.message, });
       });
   },
-  logout: function () {
+  logout: function (context) {
+    context.commit("setUserInfo", null);
+    context.commit("setDevices", null);
+    context.commit("setDashboards", null);
     localStorage.setItem("iottoken", null);
     window.location.href = "/";
   },
