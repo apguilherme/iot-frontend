@@ -45,11 +45,9 @@
 </template>
 <script>
 import NavbarToggleButton from "@/components/NavbarToggleButton";
-import mqttClient from "../../mixin/mqttClient.js";
 
 export default {
   name: "sidebar",
-  mixins: [mqttClient],
   components: {
     NavbarToggleButton,
   },
@@ -87,9 +85,6 @@ export default {
     if (this.$sidebar.showSidebar) {
       this.$sidebar.showSidebar = false;
     }
-  },
-  mounted() {
-    this.beginMqtt();
   },
 };
 </script>

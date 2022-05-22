@@ -2,8 +2,12 @@
 const HTTP = require("../../api/http.js");
 
 module.exports = {
+
+  // USER
+
   login: async function (context, data) {
-    HTTP.post("/api/users/login", {
+    context.commit("dashboard/setLoading", true, { root: true });
+    await HTTP.post("/api/users/login", {
       email: data.email,
       password: data.password,
     })
@@ -20,9 +24,11 @@ module.exports = {
         context.commit("setUserInfo", null);
         context.commit("setLoginMessages", { success: "", failure: "failure: " + error.message, });
       });
+    context.commit("dashboard/setLoading", false, { root: true });
   },
   register: async function (context, data) {
-    HTTP.post("/api/users/register", {
+    context.commit("dashboard/setLoading", true, { root: true });
+    await HTTP.post("/api/users/register", {
       name: data.name,
       email: data.email,
       password: data.password,
@@ -34,16 +40,20 @@ module.exports = {
         context.commit("setUserToken", null);
         context.commit("setRegisterMessages", { success: "", failure: "failure: " + error.message, });
       });
+    context.commit("dashboard/setLoading", false, { root: true });
   },
   logout: function (context) {
+    context.commit("dashboard/setLoading", true, { root: true });
     context.commit("setUserInfo", null);
     context.commit("setDevices", null);
     context.commit("setDashboards", null);
     localStorage.setItem("iottoken", null);
     window.location.href = "/";
+    context.commit("dashboard/setLoading", false, { root: true });
   },
   getUserNotifications: async function (context) {
-    HTTP.get("/api/alerts/notifications")
+    context.commit("dashboard/setLoading", true, { root: true });
+    await HTTP.get("/api/alerts/notifications")
       .then((res) => {
         context.commit("setNotifications", res.data.userNotifications);
       })
@@ -51,5 +61,34 @@ module.exports = {
         context.commit("setNotifications", []);
         console.log("Error retrieving notifications:", error);
       });
+    context.commit("dashboard/setLoading", false, { root: true });
   },
+
+  // BROKER
+
+  getBrokerAuth: async function (context) {
+    context.commit("dashboard/setLoading", true, { root: true });
+    await HTTP.get("/api/users/brokerauth")
+      .then((res) => {
+        context.commit("setBrokerAuth", res.data.credentials);
+      })
+      .catch((error) => {
+        context.commit("setBrokerAuth", null);
+        console.log("Error retrieving broker auth:", error);
+      });
+    context.commit("dashboard/setLoading", false, { root: true });
+  },
+  getBrokerAuthReconnect: async function (context) {
+    context.commit("dashboard/setLoading", true, { root: true });
+    await HTTP.get("/api/users/brokerauthreconn")
+      .then((res) => {
+        context.commit("setBrokerAuth", res.data.credentials);
+      })
+      .catch((error) => {
+        context.commit("setBrokerAuth", null);
+        console.log("Error retrieving broker auth:", error);
+      });
+    context.commit("dashboard/setLoading", false, { root: true });
+  },
+
 };

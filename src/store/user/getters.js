@@ -19,4 +19,7 @@ module.exports = {
   getNotifications: function (context) {
     return context.notifications;
   },
+  getBrokerAuth: function (context) {
+    return context.brokerAuth;
+  },
 };

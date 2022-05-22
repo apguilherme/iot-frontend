@@ -2,12 +2,12 @@ import mqtt from "mqtt";
 import toastMixin from "../mixin/toastMixin.js";
 
 const mqttClient = {
+  mixins: [toastMixin],
   data() {
     return {
       brokerClient: null,
     };
   },
-  mixins: [toastMixin],
   created: function () {
     this.$store.dispatch("device/getAllUserDevices");
     this.$store.dispatch("user/getUserNotifications");
@@ -21,39 +21,55 @@ const mqttClient = {
     getDeviceNameById: function (id) {
       return this.devicesList?.find((device) => device._id === id).name;
     },
-    beginMqtt() {
+    async getBrokerAuth(isReconnect = false) {
       try {
-        // CONNECT TO BROKER
-        var client = this.brokerClient; // "this" not available inside nested methods.
-        let options = {
+        if (!isReconnect) {
+          await this.$store.dispatch("user/getBrokerAuth");
+        } else if (isReconnect) {
+          await this.$store.dispatch("user/getBrokerAuthReconnect");
+        }
+        let credentials = this.$store.getters["user/getBrokerAuth"];
+        let brokerOpts = {
           host: "localhost",
           port: 8083,
           endpoint: "/mqtt",
           protocolId: "MQTT",
           protocolVersion: 4,
           clean: true,
-          connectTimeout: 5000,
-          reconnectPeriod: 5000,
+          connectTimeout: 15000,
+          reconnectPeriod: 15000,
           clientId:
             "frontend/" +
             this.$store.getters["user/getUserInfo"].email +
             "/" +
             this.$store.getters["user/getUserInfo"].id,
-          username: process.env.VUE_APP_EMQX_SUPERUSER, // can send and subscribe to any topic
-          password: process.env.VUE_APP_EMQX_SUPERUSER,
+          username: "",
+          password: "",
         };
+        brokerOpts.username = credentials.brokerUser;
+        brokerOpts.password = credentials.brokerPass;
+        return brokerOpts;
+      } catch (error) {
+        console.log("Error getting broker auth:", error);
+      }
+    },
+    async beginMqtt() {
+      try {
+        let options = await this.getBrokerAuth(false);
+        // CONNECT TO BROKER
         let topicDevices = `${this.$store.getters["user/getUserInfo"].id}/+/+/sdata`;
         let topicNotifications = `${this.$store.getters["user/getUserInfo"].id}/notifications`;
-        client = mqtt.connect(
+        var client = mqtt.connect(
           `ws://${options.host}:${options.port}${options.endpoint}`,
           options
         );
+        this.brokerClient = client;
         client.on("connect", function () {
           console.log(">>> MQTT client connected successfully.");
           client.subscribe(topicDevices, { qos: 0 }, (error) => {
             if (error) {
               console.log(
-                "> MQTT client error subscribing to devices topic:",
+                ">>> MQTT client error subscribing to devices topic:",
                 error
               );
               return;
@@ -66,7 +82,7 @@ const mqttClient = {
           client.subscribe(topicNotifications, { qos: 0 }, (error) => {
             if (error) {
               console.log(
-                "> MQTT client error subscribing to notifications topic:",
+                ">>> MQTT client error subscribing to notifications topic:",
                 error
               );
               return;
@@ -77,7 +93,9 @@ const mqttClient = {
             );
           });
         });
-        client.on("reconnect", function () {
+        client.on("reconnect", async () => {
+          options = await this.getBrokerAuth(true);
+          this.brokerClient.options = options;
           console.log(">>> MQTT client REconnected successfully.");
         });
         client.on("error", function () {

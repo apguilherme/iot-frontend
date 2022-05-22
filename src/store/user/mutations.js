@@ -14,4 +14,7 @@ module.exports = {
   setNotifications: function (context, data) {
     context.notifications = data;
   },
+  setBrokerAuth: function (context, data) {
+    context.brokerAuth = data;
+  },
 };
