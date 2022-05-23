@@ -76,6 +76,7 @@
           >
             <template v-slot:columns>
               <th>ID</th>
+              <th>Password</th>
               <th>Name</th>
               <th>Description</th>
               <th>Variables</th>
@@ -86,6 +87,7 @@
 
             <template v-slot:default="row">
               <td>{{ row.item._id }}</td>
+              <td>{{ row.item.password }}</td>
               <td>{{ row.item.name }}</td>
               <td>{{ row.item.description }}</td>
               <td>{{ row.item.variables }}</td>
