@@ -1,5 +1,6 @@
 import mqtt from "mqtt";
 import toastMixin from "../mixin/toastMixin.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const mqttClient = {
   mixins: [toastMixin],
@@ -39,10 +40,13 @@ const mqttClient = {
           connectTimeout: 15000,
           reconnectPeriod: 15000,
           clientId:
+            // remove /uuid to allow only one connection per user (more than one page open, more than one device).
             "frontend/" +
             this.$store.getters["user/getUserInfo"].email +
             "/" +
-            this.$store.getters["user/getUserInfo"].id,
+            this.$store.getters["user/getUserInfo"].id +
+            "/" +
+            uuidv4(),
           username: "",
           password: "",
         };
