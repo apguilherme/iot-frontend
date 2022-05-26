@@ -19,35 +19,49 @@ export default {
   name: "WidgetBooleanInputOutput",
   data() {
     return {
-      widgetObj: { value: false },
+      topic: `${this.$store.getters["user/getUserInfo"].id}/${this.widget.device._id}/${this.widget.variableFromDevice}/sdata`,
     };
   },
-  mounted() {
-    this.widgetObj = JSON.parse(JSON.stringify(this.$props.widget));
-    // set component to watch for the topic userid/deviceid/variable/sdata and call method to process data
-    let topic = `${this.$store.getters["user/getUserInfo"].id}/${this.widgetObj.device._id}/${this.widgetObj.variableFromDevice}/sdata`;
-    this.emitter.on(topic, this.processData);
+  watch: {
+    widget: {
+      immediate: true,
+      deep: true,
+      handler() {
+        if (!this.isEdit) {
+          // set component to watch for the topic userid/deviceid/variable/sdata and call method to process data
+          this.emitter.off(this.topic, this.processData);
+          this.topic = `${this.$store.getters["user/getUserInfo"].id}/${this.widget.device._id}/${this.widget.variableFromDevice}/sdata`;
+          this.emitter.on(this.topic, this.processData);
+        }
+      },
+    },
   },
   methods: {
+    processData: function (data) {
+      this.$props.widget.value = data.value;
+    },
     sendToTopic: function () {
-      let value = !this.widgetObj.value; // toggle
-      this.widgetObj.value = value;
+      let value = !this.widget.value; // toggle
+      this.$props.widget.value = value;
       let user = this.$store.getters["user/getUserInfo"];
       const data = {
-        topic: `${user.id}/${this.widgetObj.device._id}/${this.widgetObj.variableFromDevice}/sdata`,
+        topic: `${user.id}/${this.widget.device._id}/${this.widget.variableFromDevice}/sdata`,
         payload: {
-          value: this.widgetObj.value,
+          value: this.widget.value.toString(),
         },
       };
-      this.emitter.emit("publish-mqtt", data);
-    },
-    processData: function (data) {
-      this.widgetObj.value = data.value;
+      if (!this.isEdit) {
+        this.emitter.emit("publish-mqtt", data);
+      }
     },
   },
   computed: {
+    isEdit: function () {
+      let url = window.location.href.toString();
+      return url.includes("widgets");
+    },
     getStateColor: function () {
-      return this.widgetObj.value ? "on" : "off";
+      return this.widget.value === "true" ? "on" : "off";
     },
   },
 };

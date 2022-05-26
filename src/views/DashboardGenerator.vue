@@ -47,18 +47,16 @@ export default {
   props: ["dashboard", "widgets", "isEdit"],
   name: "DashboardGenerator",
   components: { WidgetBooleanInputOutput, WidgetIndicator },
-  data() {
-    return {
-      widgetsArray: this.widgets,
-    };
-  },
-  mounted() {},
   methods: {
     removeWidgetFromPreview(index) {
       this.widgetsArray.splice(index, 1);
     },
   },
-  computed: {},
+  computed: {
+    widgetsArray: function () {
+      return this.widgets;
+    },
+  },
 };
 </script>
 <style scoped></style>
