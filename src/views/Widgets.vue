@@ -100,7 +100,7 @@
               </a>
             </base-dropdown>
           </div>
-          <div class="col-md-1">
+          <div class="col-md-1" v-if="widget.type === 'Boolean Input/Output'">
             <label class="form-control-label">Icon</label><br />
             <base-dropdown>
               <template v-slot:title>
@@ -249,7 +249,7 @@
               <td>
                 <el-tooltip
                   placement="left"
-                  :content="row.item.isActive ? 'Turn off' : 'Turn on'"
+                  :content="row.item.isActive ? 'Deactivate' : 'Activate'"
                 >
                   <base-button
                     :key="row.item.id"
@@ -313,7 +313,7 @@ export default {
         type: "",
         name: "",
         description: "",
-        icon: "fa-home",
+        icon: "",
         unit: "",
         timeInterval: 1,
         size: "col-6",
@@ -424,6 +424,10 @@ export default {
         description: this.dashboard.description,
         widgets: this.widgetsArray,
       });
+      this.widgetsArray = [];
+      this.dashboard.name = "";
+      this.dashboard.description = "";
+      this.dashboard.widgets = [];
       await this.delay(3000);
       this.getAllUserDashboards();
     },
@@ -432,7 +436,7 @@ export default {
       this.getAllUserDashboards();
     },
     editDashboard: function () {
-      alert("edit");
+      alert("edit not implemented yet");
       // todo: populate widgetsArray with selected dashboard widgets, possible to delete or edit using form.
     },
     switchDashboardActive: async function (item) {
@@ -440,6 +444,7 @@ export default {
         dashboardID: item._id,
         isActive: !item.isActive,
       });
+      this.$store.commit("dashboard/setSelectedDashboard", null);
       this.getAllUserDashboards();
     },
   },

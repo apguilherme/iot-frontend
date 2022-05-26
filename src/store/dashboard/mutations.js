@@ -5,4 +5,7 @@ module.exports = {
   setLoading: function (context, data) {
     context.loading = data;
   },
+  setSelectedDashboard: function (context, data) {
+    context.selectedDashboard = data;
+  },
 };
