@@ -41,13 +41,14 @@ export default {
       this.$props.widget.value = data.value;
     },
     sendToTopic: function () {
-      let value = !this.widget.value; // toggle
+      let value = !(this.widget.value === "true"); // toggle
       this.$props.widget.value = value;
       let user = this.$store.getters["user/getUserInfo"];
       const data = {
         topic: `${user.id}/${this.widget.device._id}/${this.widget.variableFromDevice}/sdata`,
         payload: {
           value: this.widget.value.toString(),
+          save: 1,
         },
       };
       if (!this.isEdit) {
