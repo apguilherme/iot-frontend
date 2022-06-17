@@ -41,13 +41,13 @@ export default {
       this.$props.widget.value = data.value;
     },
     sendToTopic: function () {
-      let value = !(this.widget.value === "true"); // toggle
+      let value = !(this.widget.value === 1) ? 1 : 0; // toggle
       this.$props.widget.value = value;
       let user = this.$store.getters["user/getUserInfo"];
       const data = {
-        topic: `${user.id}/${this.widget.device._id}/${this.widget.variableFromDevice}/sdata`,
+        topic: `${user.id}/${this.widget.device._id}/${this.widget.variableFromDevice}/actdata`, // send to /actdata, devices subscribe to /+/actdata
         payload: {
-          value: this.widget.value.toString(),
+          value: this.widget.value,
           save: 1,
         },
       };
@@ -62,7 +62,7 @@ export default {
       return url.includes("widgets");
     },
     getStateColor: function () {
-      return this.widget.value === "true" ? "on" : "off";
+      return this.widget.value === 1 ? "on" : "off"; // must receive 0 or 1
     },
   },
 };

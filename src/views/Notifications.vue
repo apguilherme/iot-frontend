@@ -19,7 +19,8 @@
         >
           <template v-slot:columns>
             <th>Date</th>
-            <th>Device</th>
+            <th>Device ID</th>
+            <!-- <th>Device name</th> -->
             <th>Variable</th>
             <th>Value received</th>
             <th>Condition</th>
@@ -30,7 +31,8 @@
 
           <template v-slot:default="row">
             <td>{{ new Date(row.item.createdAt).toLocaleString() }}</td>
-            <td>{{ getDeviceNameById(row.item.deviceId) }}</td>
+            <td>{{ row.item.deviceId }}</td>
+            <!-- <td>{{ getDeviceNameById(row.item.deviceId) }}</td> -->
             <td>{{ row.item.variable }}</td>
             <td>{{ row.item.payload.value }}</td>
             <td>{{ row.item.condition }}</td>

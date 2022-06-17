@@ -3,7 +3,7 @@
         "Boolean Input/Output",
         "Indicator"
     ],
-    "icons": ["", "fa-home", "fa-sun"],
+    "icons": ["fa-home", "fa-sun", "fa-bolt", "fa-lightbulb", "fa-moon", "fa-star", "fa-bath", "fa-thermometer-three-quarters", "fa-bell", "fa-camera", "fa-circle", "fa-coffee", "fa-bed", "fa-lock", "fa-plug", "fa-power-off", "fa-volume-up", "fa-car", "fa-lock"],
     "colSizes": [
         {
             "value": "col-1",
